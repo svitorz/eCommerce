@@ -22,3 +22,6 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 });
+
+Route::resource('categories', App\Http\Controllers\CategoryController::class)->middleware('auth');
+Route::resource('products', App\Http\Controllers\ProductController::class);
