@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\isUserAdmin;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
+use Illuminate\Routing\Controllers\Middleware;
 
-class CategoryController extends Controller
+class CategoryController extends Controller implements HasMiddleware
 {
     public Category $category;
 
@@ -18,6 +20,14 @@ class CategoryController extends Controller
     public function __construct(Category $category) {
         $this->category = $category;
     }
+
+    public static function middleware():array
+    {
+        return [
+            new Middleware(isUserAdmin::class, except:['show','index']) // impede que usuários não-administradores acesses os formulários.
+        ];
+    }
+
 
     /**
      * Display a listing of the resource.
