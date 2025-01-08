@@ -39,7 +39,7 @@ const deleteCategory = (deleteCategoryId) => {
         <template #header>
             <div v-if="isAdmin">
                 <PrimaryButton :type="button" class="float-end">
-                    <a href="/categories/create"> Adicionar categoria </a>
+                    <a href="/categories/create"> Create New Category </a>
                 </PrimaryButton>
             </div>
             <h2
