@@ -6,6 +6,7 @@ use App\Http\Middleware\isUserAdmin;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Controllers\Middleware;
@@ -36,8 +37,9 @@ class CategoryController extends Controller implements HasMiddleware
 
     public function getProducts(Category $category)
     {
+        $products = new Product();
         return Inertia('Products/IndexProducts',[
-            'products' => $category->load('products'),
+            'products' => $products::query()->whereBelongsTo($category)->get(),
             'isAdmin' => request()->user()->isAdmin(),
         ]);
     }

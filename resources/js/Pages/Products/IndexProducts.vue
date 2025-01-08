@@ -53,9 +53,9 @@ const props = defineProps({
                                     class="mb-4 flex items-center justify-between gap-4"
                                 >
                                     <span
-                                        class="me-2 rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300"
+                                        class="me-2 dark:text-white rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300"
                                     >
-                                        {{ product.category}}
+                                        {{ product?.categories?.name}}
                                     </span>
 
                                     <div

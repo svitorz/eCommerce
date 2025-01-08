@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Middleware\isUserAdmin;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
-use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller implements HasMiddleware
 {
@@ -35,9 +35,8 @@ class ProductController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        dd($this->product->load('categories')->get());
         return Inertia('Products/IndexProducts',[
-            'products' => $this->product->get(),
+            'products' => $this->product->with('category')->get(),
             'isAdmin' => request()->user()->isAdmin()
         ]);
     }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('description');
             $table->integer('stock');
             $table->float('price');
-            $table->foreignId('category_id')->for(Category::class);
+            $table->foreignId('category_id')->for('categories');
         });
     }
 

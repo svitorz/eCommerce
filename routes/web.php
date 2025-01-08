@@ -26,6 +26,6 @@ Route::middleware([
 });
 Route::middleware('auth')->group( function () {
     Route::resource('categories', CategoryController::class);
-    Route::get('/categories/{id}/products',[CategoryController::class, 'getProducts']);
+    Route::get('/categories/{category}/products',[CategoryController::class, 'getProducts']);
     Route::resource('products', ProductController::class);
 });

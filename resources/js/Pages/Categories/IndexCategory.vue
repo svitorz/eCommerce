@@ -6,7 +6,7 @@ import DropdownLink from "@/Components/DropdownLink.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import DialogModal from "@/Components/DialogModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import DangerButton from "@/Components/DangerButton.vue";
+import DangerButton from "@/Components/DangerButton.vue"; 
 import { useForm } from "@inertiajs/vue3";
 import { ref } from "vue";
 // define the variables from api.
@@ -33,10 +33,6 @@ const deleteCategory = (deleteCategoryId) => {
         onSuccess: () => closeModal(),
     });
 };
-
-const seeProducts = (categoryId) => {
-    form.get(`/category/${categoryId}/products`)
-}
 </script>
 <template>
     <AppLayout title="Category">
@@ -59,7 +55,7 @@ const seeProducts = (categoryId) => {
                     class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg"
                 >
                     <div
-                        class="grid grid-rows-4 grid-flow-col gap-4 m-4"
+                        class="grid grid-cols-3 m-2"
                     >
                         <div v-for="category in categories">
                             <div
@@ -164,8 +160,10 @@ const seeProducts = (categoryId) => {
                                     {{ category.description }}
                                 </p>
 
-                                <PrimaryButton :type="button" @click="seeProducts(category?.id)">
-                                    See Products
+                                <PrimaryButton :type="button">
+                                    <a :href="`/categories/${ category.id }/products`">
+                                        See Products
+                                    </a>
                                 </PrimaryButton>
                             </div>
                         </div>

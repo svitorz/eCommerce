@@ -16,8 +16,8 @@ class Product extends Model
         'name', 'description', 'price', 'stock','category_id'
     ];
 
-    public function categories(): BelongsTo
+    public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class)->chaperone();
+        return $this->belongsTo(Category::class, 'category_id');
     }
 }
