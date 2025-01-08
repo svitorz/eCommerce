@@ -22,6 +22,7 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 });
-
-Route::resource('categories', App\Http\Controllers\CategoryController::class)->middleware('auth');
-Route::resource('products', App\Http\Controllers\ProductController::class);
+Route::middleware('auth')->group( function () {
+    Route::resource('categories', App\Http\Controllers\CategoryController::class);
+    Route::resource('products', App\Http\Controllers\ProductController::class);
+});
