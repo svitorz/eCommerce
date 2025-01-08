@@ -40,9 +40,11 @@ class CategoryController extends Controller implements HasMiddleware
     public function index()
     {
         $user = Auth::user();
-        return Inertia('Category/IndexCategory',
-        ['categories' => $this->category->get(), 
-        'isAdmin'=> $user->isAdmin ]);
+        return Inertia('Categories/IndexCategory',
+        [
+            'categories' => $this->category->get(), 
+            'isAdmin'=> $user->isAdmin 
+    ]);
     }
 
     /**
@@ -50,7 +52,11 @@ class CategoryController extends Controller implements HasMiddleware
      */
     public function create()
     {
-        return Inertia('Category/Forms/CreateCategory');
+        return Inertia('Categories/Forms/CreateCategory', 
+        [
+            'route' => route('categories.store'), 
+            'method' => 'POST'
+        ]);
     }
 
     /**
@@ -61,21 +67,17 @@ class CategoryController extends Controller implements HasMiddleware
         $this->category->create($request->validated());
         return to_route('categories.index');
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Category $category)
-    {
-        //
-    }
-
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Category $category)
     {
-        return Inertia('Category/Forms/EditCategory');
+        return Inertia('Categories/Forms/CreateCategory',
+         [ 
+            'category' => $category, 
+            'route' => route('categories.update', $category->id), 
+            'method' => 'PUT'
+        ]);
     }
 
     /**
@@ -83,7 +85,7 @@ class CategoryController extends Controller implements HasMiddleware
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        //
+        $category->update($request->validated());
     }
 
     /**

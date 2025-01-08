@@ -55,7 +55,7 @@ const deleteCategory = (deleteCategoryId) => {
                     class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg"
                 >
                     <div
-                        class="d-flex justify-content-center align-items-center m-5"
+                        class="flex justify-center align-center m-5 gap-4"
                     >
                         <div v-for="category in categories">
                             <div
