@@ -20,12 +20,6 @@ const form = useForm({
     password: '',
 });
 
-const confirmLogout = () => {
-    confirmingLogout.value = true;
-
-    setTimeout(() => passwordInput.value.focus(), 250);
-};
-
 const logoutOtherBrowserSessions = () => {
     form.delete(route('other-browser-sessions.destroy'), {
         preserveScroll: true,
@@ -34,6 +28,13 @@ const logoutOtherBrowserSessions = () => {
         onFinish: () => form.reset(),
     });
 };
+
+const confirmLogout = () => {
+    confirmingLogout.value = true;
+
+    setTimeout(() => passwordInput.value.focus(), 250);
+};
+
 
 const closeModal = () => {
     confirmingLogout.value = false;

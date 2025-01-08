@@ -9,6 +9,7 @@ use App\Models\Category;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Controllers\Middleware;
+use Inertia\Inertia;
 
 class CategoryController extends Controller implements HasMiddleware
 {
@@ -21,10 +22,14 @@ class CategoryController extends Controller implements HasMiddleware
         $this->category = $category;
     }
 
+    /**
+     * @return array
+     * Method to add middlewares in the functions.
+     */
     public static function middleware():array
     {
         return [
-            new Middleware(isUserAdmin::class, except:['show','index']) // impede que usuários não-administradores acesses os formulários.
+            new Middleware(isUserAdmin::class, except:['index']) // impede que usuários não-administradores acesses os formulários.
         ];
     }
 
@@ -45,7 +50,7 @@ class CategoryController extends Controller implements HasMiddleware
      */
     public function create()
     {
-        return Inertia('Category/CreateCategory');
+        return Inertia('Category/Forms/CreateCategory');
     }
 
     /**
@@ -70,7 +75,7 @@ class CategoryController extends Controller implements HasMiddleware
      */
     public function edit(Category $category)
     {
-        //
+        return Inertia('Category/Forms/EditCategory');
     }
 
     /**
@@ -86,6 +91,6 @@ class CategoryController extends Controller implements HasMiddleware
      */
     public function destroy(Category $category)
     {
-        //
+        $category->delete();
     }
 }
