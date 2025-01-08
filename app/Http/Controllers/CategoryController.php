@@ -9,7 +9,6 @@ use App\Models\Category;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Controllers\Middleware;
-use Inertia\Inertia;
 
 class CategoryController extends Controller implements HasMiddleware
 {

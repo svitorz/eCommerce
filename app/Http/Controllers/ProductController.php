@@ -2,12 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\isUserAdmin;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class ProductController extends Controller
+class ProductController extends Controller implements HasMiddleware
 {
+    public static function middleware() : array
+    {
+        // impede que usuários comuns façam alterações nos produtos.
+        return [
+            new Middleware(isUserAdmin::class, except:['show','index'])
+        ];
+    }
+
+
     /**
      * Display a listing of the resource.
      */
