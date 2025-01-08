@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -23,6 +25,7 @@ Route::middleware([
     })->name('dashboard');
 });
 Route::middleware('auth')->group( function () {
-    Route::resource('categories', App\Http\Controllers\CategoryController::class);
-    Route::resource('products', App\Http\Controllers\ProductController::class);
+    Route::resource('categories', CategoryController::class);
+    Route::get('/categories/{id}/products',[CategoryController::class, 'getProducts']);
+    Route::resource('products', ProductController::class);
 });

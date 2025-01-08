@@ -5,12 +5,22 @@ namespace App\Http\Controllers;
 use App\Http\Middleware\isUserAdmin;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
 
 class ProductController extends Controller implements HasMiddleware
 {
+    public Product $product;
+
+    public function __construct(Product $product) {
+        $this->product = $product;
+    }
+    /**
+     * @return array
+     * Insert middleware at this functions.
+     */
     public static function middleware() : array
     {
         // impede que usuários comuns façam alterações nos produtos.
@@ -25,7 +35,11 @@ class ProductController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        //
+        dd($this->product->load('categories')->get());
+        return Inertia('Products/IndexProducts',[
+            'products' => $this->product->get(),
+            'isAdmin' => request()->user()->isAdmin()
+        ]);
     }
 
     /**
@@ -43,7 +57,6 @@ class ProductController extends Controller implements HasMiddleware
     {
         //
     }
-
     /**
      * Display the specified resource.
      */

@@ -33,6 +33,10 @@ const deleteCategory = (deleteCategoryId) => {
         onSuccess: () => closeModal(),
     });
 };
+
+const seeProducts = (categoryId) => {
+    form.get(`/category/${categoryId}/products`)
+}
 </script>
 <template>
     <AppLayout title="Category">
@@ -160,9 +164,8 @@ const deleteCategory = (deleteCategoryId) => {
                                     {{ category.description }}
                                 </p>
 
-                                <PrimaryButton :type="button">
-                                    <!-- TODO: implementar a busca dos produtos através da categoria. -->
-                                    Ver produtos
+                                <PrimaryButton :type="button" @click="seeProducts(category?.id)">
+                                    See Products
                                 </PrimaryButton>
                             </div>
                         </div>

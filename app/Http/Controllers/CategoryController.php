@@ -9,6 +9,7 @@ use App\Models\Category;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Controllers\Middleware;
+use Inertia\Inertia;
 
 class CategoryController extends Controller implements HasMiddleware
 {
@@ -32,6 +33,14 @@ class CategoryController extends Controller implements HasMiddleware
         ];
     }
 
+
+    public function getProducts(Category $category)
+    {
+        return Inertia('Products/IndexProducts',[
+            'products' => $category->load('products'),
+            'isAdmin' => request()->user()->isAdmin(),
+        ]);
+    }
 
     /**
      * Display a listing of the resource.
@@ -66,6 +75,7 @@ class CategoryController extends Controller implements HasMiddleware
         $this->category->create($request->validated());
         return to_route('categories.index');
     }
+
     /**
      * Show the form for editing the specified resource.
      */
