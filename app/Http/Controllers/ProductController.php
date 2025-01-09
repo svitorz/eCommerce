@@ -68,6 +68,8 @@ class ProductController extends Controller implements HasMiddleware
     {
         return Inertia('Products/Forms/ProductForm',[
             'categories' => Category::distinct()->get(),
+            'route' => route('products.store'), 
+            'method' => 'POST'
         ]);
     }
 
@@ -76,15 +78,19 @@ class ProductController extends Controller implements HasMiddleware
      */
     public function store(StoreProductRequest $request)
     {
-        $this->product->create($request->validated());
-        return to_route('products.index');
+        $id = $this->product->create($request->validated())->id;
+        return to_route('products.show',$id);
     }
     /**
      * Display the specified resource.
      */
     public function show(Product $product)
     {
-        //
+        return Inertia('Products/ShowProduct',
+        [
+            'product' => $product->load('category'),
+            'isAdmin' => request()->user()->isAdmin(),
+        ]);
     }
 
     /**
@@ -92,7 +98,13 @@ class ProductController extends Controller implements HasMiddleware
      */
     public function edit(Product $product)
     {
-        //
+        return Inertia('Products/Forms/ProductForm',[
+            'isAdmin' => request()->user()->isAdmin(),
+            'product' => $product,
+            'categories' => Category::distinct()->get(),
+            'route' => route('products.update', $product->id), 
+            'method' => 'PUT'
+        ]);
     }
 
     /**
@@ -100,7 +112,8 @@ class ProductController extends Controller implements HasMiddleware
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
-        //
+        $id = $product->update($request->validated());
+        return to_route('products.show',$id);
     }
 
     /**
@@ -108,6 +121,7 @@ class ProductController extends Controller implements HasMiddleware
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+        return to_route('products.index');
     }
 }

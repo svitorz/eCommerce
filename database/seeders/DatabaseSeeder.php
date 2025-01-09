@@ -22,7 +22,12 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('12345678'),
             'isAdmin' => true,
         ]);
-
+        User::factory()->create([
+            'name' => 'Teste User no admin',
+            'email' => 'test@example.com',
+            'password' => Hash::make('12345678'),
+            'isAdmin' => false,
+        ]);
         $this->call([CategorySeeder::class, ProductSeeder::class]);
     }
 }

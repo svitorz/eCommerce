@@ -10,3 +10,4 @@
 - Inserção de itens favoritos(com sessão)
 - Inserção de um rating (notas dos usuários ao produto)
 - Comentários ao produto
+- Breadcrumb

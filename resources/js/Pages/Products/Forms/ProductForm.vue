@@ -4,19 +4,26 @@ import TextInput from "@/Components/TextInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import { router, useForm } from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import ActionMessage from "@/Components/ActionMessage.vue";
+
+
 const props = defineProps({
     categories: Array,
+    product: Array,
+    method: { type: String },
+    route: { type: String}
 });
+
 const form = useForm({
-    name: "teste",
-    description: "lorem impsum dot elens sadsa",
-    price: 120.0,
-    stock: 100,
-    category_id: '',
+    name: props.product?.name || '',
+    description: props.product?.description || '',
+    price: Number(props.product?.price || 0).toFixed(2),
+    stock: Number(props.product?.stock || 0),
+    category_id: props.product?.category_id || '',
 });
 
 function submit() {
-    router.post(route("products.store"), form);
+    router.visit(props.route, {method: props.method, data: form});
 }
 </script>
 
@@ -85,7 +92,7 @@ function submit() {
                                         v-model="form.price"
                                         type="number"
                                         min="0.0"
-                                        step="0.1"
+                                        step="any"
                                         placeholder="Ex: 1500.99"
                                         class="mt-1 w-full h-12"
                                         required
@@ -141,8 +148,11 @@ function submit() {
                                     :message="form.errors.category_id"
                                 />
                             </div>
+                            <ActionMessage>
+                                Saved.
+                            </ActionMessage>
                             <PrimaryButton class="my-4 float-end">
-                                Create
+                                Save
                             </PrimaryButton>
                         </form>
                     </div>
