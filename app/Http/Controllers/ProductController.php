@@ -6,6 +6,7 @@ use App\Http\Middleware\isUserAdmin;
 use App\Http\Requests\SearchQueryRequest;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -65,7 +66,9 @@ class ProductController extends Controller implements HasMiddleware
      */
     public function create()
     {
-        //
+        return Inertia('Products/Forms/ProductForm',[
+            'categories' => Category::distinct()->get(),
+        ]);
     }
 
     /**
@@ -73,7 +76,8 @@ class ProductController extends Controller implements HasMiddleware
      */
     public function store(StoreProductRequest $request)
     {
-        //
+        $this->product->create($request->validated());
+        return to_route('products.index');
     }
     /**
      * Display the specified resource.
