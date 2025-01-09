@@ -27,6 +27,6 @@ Route::middleware([
 Route::middleware('auth')->group( function () {
     Route::resource('categories', CategoryController::class);
     Route::get('/categories/{category}/products',[CategoryController::class, 'getProducts'])->name('category.products');
-    Route::post('/products/{searchKey}', [ProductController::class, 'searchProduct'])->name('products.search');
+    Route::get('/search/{searchKey}', [ProductController::class, 'searchProduct'])->name('search');
     Route::resource('products', ProductController::class);
 });

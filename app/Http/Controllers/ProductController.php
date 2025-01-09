@@ -48,12 +48,12 @@ class ProductController extends Controller implements HasMiddleware
     {
         $searchKey = $searchKey->searchKey;
         $products = $this->product->load('category')
-        ->where('products.name','LIKE','%'.$searchKey.'%')
-        ->orWhere('products.description','LIKE','%'.$searchKey.'%')
-        ->orWhereHas('category', function ($query) use ($searchKey) {
-            $query->where('name', 'LIKE', '%' . $searchKey . '%');
-        })
-        ->get();
+            ->where('products.name','LIKE','%'.$searchKey.'%')
+            ->orWhere('products.description','LIKE','%'.$searchKey.'%')
+            ->orWhereHas('category', function ($query) use ($searchKey) {
+                $query->where('name', 'LIKE', '%' . $searchKey . '%');
+            })
+            ->get();
 
         return Inertia('Products/IndexProducts',[
             'isAdmin' => request()->user()->isAdmin(),
