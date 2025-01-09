@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Middleware\isUserAdmin;
+use App\Http\Requests\SearchQueryRequest;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class ProductController extends Controller implements HasMiddleware
 {
@@ -41,6 +43,23 @@ class ProductController extends Controller implements HasMiddleware
         ]);
     }
 
+
+    public function searchProduct(SearchQueryRequest $searchKey)
+    {
+        $searchKey = $searchKey->searchKey;
+        $products = $this->product->load('category')
+        ->where('products.name','LIKE','%'.$searchKey.'%')
+        ->orWhere('products.description','LIKE','%'.$searchKey.'%')
+        ->orWhereHas('category', function ($query) use ($searchKey) {
+            $query->where('name', 'LIKE', '%' . $searchKey . '%');
+        })
+        ->get();
+
+        return Inertia('Products/IndexProducts',[
+            'isAdmin' => request()->user()->isAdmin(),
+            'products' => $products,
+        ]);
+    }
     /**
      * Show the form for creating a new resource.
      */
