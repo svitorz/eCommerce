@@ -41,13 +41,13 @@ class ProductController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        // dd(request()->session());
         $products = $this->product->with('category')->get()->map(function ($product) {
             return [
                 'id' => $product->id,
                 'name' => $product->name,
                 'price' => $product->price,
-                'inCart' => $this->isInCart($product->id)
+                'stock' => $product->stock,
+                'inCart' => $this->isInCart($product)
             ];
         });
         return Inertia('Products/IndexProducts',[
@@ -99,6 +99,7 @@ class ProductController extends Controller implements HasMiddleware
      */
     public function show(Product $product)
     {
+        $product->inCart = $this->isInCart($product);
         return Inertia('Products/ShowProduct',
         [
             'product' => $product->load('category'),

@@ -34,7 +34,10 @@ Route::middleware('auth')->group( function () {
     
     Route::resource('products', ProductController::class);
 
-    Route::post('/addToCart',[CartController::class, 'addToCart'])->name('cart.add');
+    Route::get('/cart/add/{product}',[CartController::class, 'store'])->name('cart.store');
+    Route::get('/cart/destroy/{product}',[CartController::class, 'destroy'])->name('cart.destroy');
+});
 
-    Route::get('/cart/check/{productId}', [CartController::class, 'check'])->name('cart.check');
+Route::get('/dumpSession',function(){
+    dd(session()->only(['cart']));
 });

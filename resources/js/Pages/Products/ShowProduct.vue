@@ -316,7 +316,7 @@ const deleteProduct = (deleteProductId) => {
                                                     />
                                                 </svg>
 
-                                                Add to cart
+                                                {{ product.inCart ? 'Add to cart' || 'Aditioned.' }}
                                             </a>
                                         </div>
 

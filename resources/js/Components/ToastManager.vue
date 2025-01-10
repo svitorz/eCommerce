@@ -1,6 +1,6 @@
-<!-- ToastManager.vue -->
 <script setup>
 import { ref } from 'vue'
+
 
 const show = ref(false)
 const message = ref('')
