@@ -2,7 +2,7 @@
 > Implementação de autenticação. 
 > Implementação de nível de permissão (Usuário/Admin).
 > Cadastro de categorias
-- Cadastro de produtos 
+> Cadastro de produtos 
 - Implementação de carrinhos 
 - Emissão de pedidos
 

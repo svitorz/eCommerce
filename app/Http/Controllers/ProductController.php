@@ -6,6 +6,7 @@ use App\Http\Middleware\isUserAdmin;
 use App\Http\Requests\SearchQueryRequest;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Http\Traits\CartTrait;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Routing\Controllers\Middleware;
@@ -15,6 +16,8 @@ use Inertia\Inertia;
 
 class ProductController extends Controller implements HasMiddleware
 {
+    use CartTrait;
+
     public Product $product;
 
     public function __construct(Product $product) {
@@ -38,13 +41,23 @@ class ProductController extends Controller implements HasMiddleware
      */
     public function index()
     {
+        // dd(request()->session());
+        $products = $this->product->with('category')->get()->map(function ($product) {
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'price' => $product->price,
+                'inCart' => $this->isInCart($product->id)
+            ];
+        });
         return Inertia('Products/IndexProducts',[
-            'products' => $this->product->with('category')->get(),
+            'products' => $products,
             'isAdmin' => request()->user()->isAdmin()
         ]);
     }
-
-
+    /**
+    * Função responsável por buscar produtos ou categorias de acordo com a pesquisa do usuários'o
+    * */
     public function searchProduct(SearchQueryRequest $searchKey)
     {
         $searchKey = $searchKey->searchKey;
@@ -68,7 +81,7 @@ class ProductController extends Controller implements HasMiddleware
     {
         return Inertia('Products/Forms/ProductForm',[
             'categories' => Category::distinct()->get(),
-            'route' => route('products.store'), 
+            'route' => route('products.store'),
             'method' => 'POST'
         ]);
     }
@@ -102,7 +115,7 @@ class ProductController extends Controller implements HasMiddleware
             'isAdmin' => request()->user()->isAdmin(),
             'product' => $product,
             'categories' => Category::distinct()->get(),
-            'route' => route('products.update', $product->id), 
+            'route' => route('products.update', $product->id),
             'method' => 'PUT'
         ]);
     }

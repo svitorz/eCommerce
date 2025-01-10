@@ -37,7 +37,7 @@ const deleteCategory = (deleteCategoryId) => {
 <template>
     <div v-if="category">
         <div
-            class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+            class="block max-w-sm my-4 p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
         >
             <!-- dropdown to edit and exclude the category buttons-->
             <Dropdown align="right" width="48" v-if="isAdmin">
@@ -115,8 +115,8 @@ const deleteCategory = (deleteCategoryId) => {
             </p>
 
             <PrimaryButton :type="button">
-                <a :href="route('category.products',category.id)">
-                    See Products
+                <a :href="route('categories.products',category.id)">
+                    See related Products
                 </a>
             </PrimaryButton>
         </div>

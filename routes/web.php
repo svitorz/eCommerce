@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Foundation\Application;
@@ -26,7 +27,14 @@ Route::middleware([
 });
 Route::middleware('auth')->group( function () {
     Route::resource('categories', CategoryController::class);
-    Route::get('/categories/{category}/products',[CategoryController::class, 'getProducts'])->name('category.products');
+    
+    Route::get('/categories/{category}/products',[CategoryController::class, 'getProducts'])->name('categories.products');
+    
     Route::get('/search/{searchKey}', [ProductController::class, 'searchProduct'])->name('search');
+    
     Route::resource('products', ProductController::class);
+
+    Route::post('/addToCart',[CartController::class, 'addToCart'])->name('cart.add');
+
+    Route::get('/cart/check/{productId}', [CartController::class, 'check'])->name('cart.check');
 });

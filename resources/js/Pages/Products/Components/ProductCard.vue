@@ -1,8 +1,43 @@
 <script setup>
+import { ref } from "vue";
+import ToastManager from "@/Components/ToastManager.vue";
+import { router } from '@inertiajs/vue3'
 const props = defineProps({
     product: Array,
     isAdmin: Boolean,
 });
+
+const toastRef = ref(null);
+const loading = ref(false);
+
+const addToCart = async (id) => {
+    loading.value = true;
+    try {
+        await router.visit(route('cart.add'),{method: 'POST', data:id}, {
+                preserveState: true,
+                preserveScroll: true,
+                onSuccess: () => {
+                    toastRef.value.showToast(
+                        "Produto adicionado ao carrinho!",
+                        "success"
+                    );
+                },
+                onError: () => {
+                    toastRef.value.showToast(
+                        "Erro ao adicionar ao carrinho",
+                        "error"
+                    );
+                },
+                onFinish: () => {
+                    loading.value = false;
+                },
+            });
+    } catch (error) {
+        toastRef.value.showToast("Erro inesperado", "error");
+        console.log(error);
+        loading.value = false;
+    };
+}
 </script>
 <template>
     <div class="h-56 w-full">
@@ -28,8 +63,8 @@ const props = defineProps({
             </span>
 
             <div class="flex items-center justify-end gap-1">
-                <a 
-                    :href="route('products.show',product.id)"
+                <a
+                    :href="route('products.show', product.id)"
                     data-tooltip-target="tooltip-quick-look"
                     class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                 >
@@ -62,7 +97,7 @@ const props = defineProps({
                     data-popper-placement="top"
                 >
                     Quick look
-                    <div class="tooltip-arrow" data-popper-arrow=""></div>
+                    <div class="tooltip-arrow"></div>
                 </div>
 
                 <button
@@ -100,7 +135,7 @@ const props = defineProps({
         </div>
 
         <a
-            :href="route('products.show',product.id)"
+            :href="route('products.show', product.id)"
             class="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white"
             >{{ product.name }}</a
         >
@@ -223,9 +258,9 @@ const props = defineProps({
             >
                 {{ product.price }}
             </p>
-
             <button
-                type="button"
+                @click="addToCart(product.id)"
+                type="submit"
                 class="inline-flex items-center rounded-lg bg-gray-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             >
                 <svg
@@ -245,8 +280,11 @@ const props = defineProps({
                         d="M4 4h1.5L8 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm.75-3H7.5M11 7H6.312M17 4v6m-3-3h6"
                     />
                 </svg>
-                Add to cart
+                <span v-if="loading">Aditioning...</span>
+                <span v-else-if="props.product.inCart">Aditioned.</span>
+                <span v-else>Add to cart</span>
             </button>
         </div>
+        <ToastManager ref="toastRef" />
     </div>
 </template>
