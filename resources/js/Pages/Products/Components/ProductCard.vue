@@ -1,16 +1,9 @@
 <script setup>
-import ToastManager from "@/Components/ToastManager.vue";
 import CartButton from "@/Pages/Cart/Components/CartButton.vue";
-import { ref } from "vue";
 const props = defineProps({
     product: Array,
     isAdmin: Boolean,
 });
-const toastRef = ref(null);
-
-const handleToastValue = (value) => {
-    toastRef = value;
-}
 </script>
 <template>
     <div class="h-56 w-full">
@@ -232,8 +225,7 @@ const handleToastValue = (value) => {
                 {{ product.price }}
             </p>
             <!--  -->
-            <CartButton :product="product" @toastedRef="handleToastValue"/>
+            <CartButton :product="product"/>
         </div>
-        <ToastManager ref="toastRef" />
     </div>
 </template>

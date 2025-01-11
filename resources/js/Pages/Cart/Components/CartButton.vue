@@ -1,5 +1,7 @@
 <script setup>
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed } from "vue";
+import { router } from "@inertiajs/vue3";
+import ToastManager from "@/Components/ToastManager.vue";
 const emit = defineEmits(["toastedRef"]);
 // Props recebidas
 const props = defineProps({
@@ -10,12 +12,8 @@ const props = defineProps({
 });
 
 const loading = ref(false);
-
 const toastRef = ref(null);
 
-watch(toastRef, () => {
-    emit('toast', toastRef)
-})
 const addToCart = async (product) => {
     loading.value = true;
     try {
@@ -55,7 +53,7 @@ const removeFromCart = async (product) => {
             onSuccess: () => {
                 toastRef.value.showToast(
                     "Product removed from cart!",
-                    "success"
+                    "info"
                 );
                 props.product.inCart = false;
             },
@@ -128,4 +126,5 @@ const handleCartAction = async () => {
             {{ buttonText }}
         </button>
     </form>
+    <ToastManager ref="toastRef" />
 </template>
