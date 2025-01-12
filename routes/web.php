@@ -37,7 +37,3 @@ Route::middleware('auth')->group( function () {
     Route::get('/cart/add/{product}',[CartController::class, 'store'])->name('cart.store');
     Route::get('/cart/destroy/{product}',[CartController::class, 'destroy'])->name('cart.destroy');
 });
-
-Route::get('/dumpSession',function(){
-    dd(session()->only(['cart']));
-});
