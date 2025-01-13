@@ -9,6 +9,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Address;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable
 {
@@ -68,5 +70,10 @@ class User extends Authenticatable
     public function isAdmin():bool
     {
         return $this->isAdmin;
+    }
+
+    public function address():HasOne
+    {
+        return $this->HasOne(Address::class);
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
@@ -36,4 +37,6 @@ Route::middleware('auth')->group( function () {
 
     Route::get('/cart/add/{product}',[CartController::class, 'store'])->name('cart.store');
     Route::get('/cart/destroy/{product}',[CartController::class, 'destroy'])->name('cart.destroy');
+
+    Route::post('/address', [AddressController::class,'store'])->name('address.store');
 });
