@@ -99,7 +99,11 @@ class ProductController extends Controller implements HasMiddleware
      */
     public function show(Product $product)
     {
-        $product->inCart = $this->isInCart($product);
+        $product->inCart = $this->isInCart($product); 
+        if($product->inCart){
+            $cartProduct = $this->getCartProduct($product);
+            $product->quantity = $cartProduct->quantity ?? 1;
+        }
         return Inertia('Products/ShowProduct',
         [
             'product' => $product->load('category'),

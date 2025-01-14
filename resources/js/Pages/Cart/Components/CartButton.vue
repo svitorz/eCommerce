@@ -17,6 +17,13 @@ const toastRef = ref(null);
 const addToCart = async (product) => {
     loading.value = true;
     try {
+        if(product.quantity > product.stock){
+            toastRef.value.showToast(
+                    "The quantity cannot be higher than stock.",
+                    "error"
+                );
+            return;
+        }
         await router.visit(route("cart.store", { product: product }), {
             preserveState: true,
             preserveScroll: true,

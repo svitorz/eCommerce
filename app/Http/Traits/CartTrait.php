@@ -1,11 +1,11 @@
-<?php 
+<?php
 
 namespace App\Http\Traits;
 
 use App\Models\Product;
 
 trait CartTrait {
-    
+
     /**
      * Inicia o carrinho dentro das sessões.
      */
@@ -24,7 +24,9 @@ trait CartTrait {
      */
     public function addToCart(Product $product):void
     {
-        session()->push('cart',$product);
+        $productArray = $product->toArray();
+        $productArray['quantity'] = $product->quantity; 
+        session()->push('cart', $productArray);
         $this->saveCart();
     }
 
@@ -40,7 +42,7 @@ trait CartTrait {
         session()->put('cart', $cart);
         $this->saveCart();
     }
-    
+
     /**
      * Remove todos os produtos do carrinho.
      */
@@ -54,7 +56,7 @@ trait CartTrait {
     /**
      * Retorna todos os produtos do carrinho.
      */
-    public function getCartItems(): array 
+    public function getCartItems(): array
     {
         return session()->get('cart');
     }
@@ -67,5 +69,19 @@ trait CartTrait {
         $cart = session()->get('cart', []);
         $ids = array_column($cart, 'id');
         return in_array($product->id, $ids);
+    }
+
+
+    /**
+    * Retorna um valor específico de dentro do carrinho (sessão).
+    * */
+    public function getCartProduct(Product $product){
+        $cart = session()->get('cart',[]);
+        foreach($cart as $item){
+            if ($item['id'] === $product->id) { 
+                return (object) $item; 
+            }
+        }
+        return null;
     }
 }

@@ -28,15 +28,23 @@ Route::middleware([
 });
 Route::middleware('auth')->group( function () {
     Route::resource('categories', CategoryController::class);
-    
+
     Route::get('/categories/{category}/products',[CategoryController::class, 'getProducts'])->name('categories.products');
-    
+
     Route::get('/search/{searchKey}', [ProductController::class, 'searchProduct'])->name('search');
-    
+
     Route::resource('products', ProductController::class);
 
     Route::get('/cart/add/{product}',[CartController::class, 'store'])->name('cart.store');
     Route::get('/cart/destroy/{product}',[CartController::class, 'destroy'])->name('cart.destroy');
 
     Route::post('/address', [AddressController::class,'store'])->name('address.store');
+});
+
+Route::get('dumpSession', function(){
+    dd(request()->session());
+});
+
+Route::get('clearSession', function(){
+    return session()->flush('cart');
 });

@@ -1,17 +1,38 @@
 <script setup>
-import AppLayout from "@/Layouts/AppLayout.vue";
-import Dropdown from "@/Components/Dropdown.vue";
-import DialogModal from "@/Components/DialogModal.vue";
-import DropdownLink from "@/Components/DropdownLink.vue";
 import { defineProps,ref } from "vue";
 import { useForm } from "@inertiajs/vue3";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import Dropdown from "@/Components/Dropdown.vue";
+import TextInput from "@/Components/TextInput.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import DialogModal from "@/Components/DialogModal.vue";
+import DropdownLink from "@/Components/DropdownLink.vue";
 import DangerButton from "@/Components/DangerButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import CartButton from "../Cart/Components/CartButton.vue";
+import ToastManager from "@/Components/ToastManager.vue";
+
 const props = defineProps({
     product: Array,
     isAdmin: Boolean,
 });
+
+const toastRef = ref(null);
+function verifyQuantity(){
+    if(props.product.quantity > props.product.stock){
+        props.product.quantity = props.product.stock;
+        toastRef.value.showToast(
+                    "The quantity cannot be higher than stock.",
+                    "error"
+                );
+    }else if(props.product.quantity < 1) {
+        props.product.quantity = 1;
+        toastRef.value.showToast(
+                "The quantity cannot be lower than 1.",
+                "error"
+            );
+    }
+}
 
 // functions
 const form = useForm({
@@ -263,7 +284,26 @@ const deleteProduct = (deleteProductId) => {
                                                 </a>
                                             </div>
                                         </div>
-
+                                        <div
+                                            class="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8"
+                                        >
+                                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                {{product.stock}} avaliable.
+                                            </p>
+                                            <div>
+                                                <InputLabel for="quantity" value="Quantity" />
+                                                <TextInput
+                                                    @input="verifyQuantity"
+                                                    id="product.quantity"
+                                                    v-model="props.product.quantity"
+                                                    type="number"
+                                                    class="mt-1 w-full h-12"
+                                                    :max="product.stock"
+                                                    required
+                                                    autofocus
+                                            />
+                                            </div>
+                                        </div>
                                         <div
                                             class="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8"
                                         >
@@ -292,7 +332,7 @@ const deleteProduct = (deleteProductId) => {
                                                 </svg>
                                                 Add to favorites
                                             </a>
-                                            <CartButton :product="product"/>
+                                            <CartButton @click.prevent="verifyQuantity" :product="product"/>
                                         </div>
 
                                         <hr
@@ -312,5 +352,6 @@ const deleteProduct = (deleteProductId) => {
                 </div>
             </div>
         </div>
+    <ToastManager ref="toastRef" />
     </AppLayout>
 </template>
