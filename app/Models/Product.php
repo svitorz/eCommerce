@@ -13,21 +13,22 @@ class Product extends Model
     /** @use HasFactory<\Database\Factories\ProductFactory> */
     use HasFactory;
 
+    protected $fillable = [
+        'name', 'description', 'price', 'stock','category_id'
+    ];
+
+
     protected $appends = ['quantity'];
 
     protected function getQuantityAttribute(): int
     {
-        return $this->attributes['quantity'] ?? 1;
+        return $this->attributes['quantity'];
     }
-    
+
     protected function setQuantityAttribute($value)
     {
         $this->attributes['quantity'] = $value;
     }
-
-    protected $fillable = [
-        'name', 'description', 'price', 'stock','category_id'
-    ];
 
     public function category(): BelongsTo
     {

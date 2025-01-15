@@ -19,7 +19,6 @@ const props = defineProps({
 
 const localProduct = reactive({ ...props.product });
 
-// Sincronize mudanças de `props.product` com `localProduct`
 watch(
     () => props.product,
     (newVal) => {
@@ -27,27 +26,11 @@ watch(
     },
     { deep: true, immediate: true }
 );
-// Atualize o valor local
 function updateProductQuantity(quantity) {
-    localProduct.value.quantity = quantity;
+    localProduct.quantity = quantity;
 }
 const toastRef = ref(null);
 
-function verifyQuantity(){
-    if(localProduct.value.quantity > localProduct.value.stock){
-        localProduct.value.quantity = localProduct.value.stock;
-        toastRef.value.showToast(
-            "The quantity cannot be higher than stock.",
-            "error"
-        );
-    }else if(localProduct.value.quantity < 1) {
-        localProduct.value.quantity = 1;
-        toastRef.value.showToast(
-            "The quantity cannot be lower than 1.",
-            "error"
-        );
-    }
-}
 // functions
 const form = useForm({
     deleteProductId: 0,
@@ -307,7 +290,6 @@ const deleteProduct = (deleteProductId) => {
                                             <div>
                                                 <InputLabel for="quantity" value="Quantity" />
                                                 <TextInput
-                                                     @input="verifyQuantity"
                                                     id="quantity"
                                                     v-model="localProduct.quantity"
                                                     type="number"
@@ -346,7 +328,7 @@ const deleteProduct = (deleteProductId) => {
                                                 </svg>
                                                 Add to favorites
                                             </a>
-                                            <CartButton @click="updateProductQuantity":product="localProduct"/>
+                                            <CartButton @click="updateProductQuantity" :product="localProduct"/>
                                         </div>
 
                                         <hr

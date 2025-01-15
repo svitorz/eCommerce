@@ -35,7 +35,7 @@ Route::middleware('auth')->group( function () {
 
     Route::resource('products', ProductController::class);
 
-    Route::get('/cart/add/{product}',[CartController::class, 'store'])->name('cart.store');
+    Route::post('/cart/add/',[CartController::class, 'store'])->name('cart.store');
     Route::get('/cart/destroy/{product}',[CartController::class, 'destroy'])->name('cart.destroy');
 
     Route::post('/address', [AddressController::class,'store'])->name('address.store');

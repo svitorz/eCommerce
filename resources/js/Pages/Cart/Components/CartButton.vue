@@ -1,35 +1,29 @@
 <script setup>
-import { ref, computed } from "vue";
+import { reactive,ref,computed } from "vue";
 import { router } from "@inertiajs/vue3";
 import ToastManager from "@/Components/ToastManager.vue";
+
 const loading = ref(false);
 const toastRef = ref(null);
-const props = defineProps({
-    product: Object,
-    isAdmin: Boolean,
-});
 
-const localProduct = computed({
-    get: () => ({
-        ...props.product,
-    }),
-    set: (newVal) => Object.assign(props.product, newVal)
-});
+const props = defineProps({ product: Array });
 
-const addToCart = async (product) => {
+const localProduct = reactive({ ...props.product });
+
+const addToCart = async () => {
     loading.value = true;
     try {
         // Verifica se já está no carrinho
-        if (product.inCart) {
+        if (localProduct.inCart) {
             toastRef.value.showToast(
-                "Product is already in cart!",
+                "localProduct is already in cart!",
                 "info"
             );
             loading.value = false;
             return;
         }
 
-        if(product.quantity > product.stock){
+        if(localProduct.quantity > localProduct.stock){
             toastRef.value.showToast(
                 "The quantity cannot be higher than stock.",
                 "error"
@@ -38,11 +32,10 @@ const addToCart = async (product) => {
             return;
         }
 
-        await router.visit(route("cart.store", {
-            product: {
-                id: product.id,
-                quantity: product.quantity
-            }
+        await router.post(route("cart.store", {
+            product_id: localProduct.id,
+            quantity: props.product.quantity,
+            only: ['product'],
         }), {
             preserveState: true,
             preserveScroll: true,
@@ -51,11 +44,11 @@ const addToCart = async (product) => {
                     "Product successfully added to cart!",
                     "success"
                 );
-                localProduct.value.inCart = true;
+                localProduct.inCart = true;
             },
             onError: () => {
                 toastRef.value.showToast(
-                    "Error adding product to cart.",
+                    "Error adding localProduct to cart.",
                     "error"
                 );
             },
@@ -70,14 +63,10 @@ const addToCart = async (product) => {
     }
 };
 
-const removeFromCart = async (product) => {
+const removeFromCart = async (localProduct) => {
     loading.value = true;
     try {
-        await router.visit(route("cart.destroy", {
-            product: {
-                id: product.id
-            }
-        }), {
+        await router.visit(route("cart.destroy", { product: localProduct}), {
             preserveState: true,
             preserveScroll: true,
             onSuccess: () => {
@@ -85,12 +74,12 @@ const removeFromCart = async (product) => {
                     "Product removed from cart!",
                     "info"
                 );
-                localProduct.value.inCart = false;
-                localProduct.value.quantity = 1; // Reset quantidade ao remover
+                localProduct.inCart = false;
+                localProduct.quantity = 1;
             },
             onError: () => {
                 toastRef.value.showToast(
-                    "Error removing product from cart.",
+                    "Error removing localProduct from cart.",
                     "error"
                 );
             },
@@ -106,26 +95,24 @@ const removeFromCart = async (product) => {
 };
 const buttonText = computed(() => {
     if (loading.value) {
-        return localProduct.value.inCart ? "Removing..." : "Adding...";
+        return localProduct.inCart ? "Removing..." : "Adding...";
     }
-    return localProduct.value.inCart ? "Added" : "Add to Cart";
+    return localProduct.inCart ? "Added" : "Add to Cart";
 });
 
 const handleCartAction = async () => {
     if (loading.value) return; // Previne múltiplos cliques
 
     try {
-        if (localProduct.value.inCart) {
-            await removeFromCart(localProduct.value);
+        if (localProduct.inCart) {
+            await removeFromCart(localProduct);
         } else {
-            await addToCart(localProduct.value);
+            await addToCart();
         }
     } catch (error) {
         toastRef.value.showToast("Unexpected error", "error");
         console.log(error);
     }
-    // Removemos o finally pois o loading já está sendo tratado nas funções
-    // addToCart e removeFromCart em seus respectivos onFinish
 };
 </script>
 <template>
@@ -152,6 +139,7 @@ const handleCartAction = async () => {
                     d="M4 4h1.5L8 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm.75-3H7.5M11 7H6.312M17 4v6m-3-3h6"
                 />
             </svg>
+
             {{ buttonText }}
         </button>
     </form>
