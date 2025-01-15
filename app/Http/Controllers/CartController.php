@@ -17,6 +17,7 @@ class CartController extends Controller
 
     public function store(Product $product)
     {
+        dd($product);
         $this->addToCart($product);
     }
 

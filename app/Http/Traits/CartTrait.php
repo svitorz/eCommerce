@@ -24,8 +24,11 @@ trait CartTrait {
      */
     public function addToCart(Product $product):void
     {
+        if($this->isInCart($product)){
+            return;
+        }
         $productArray = $product->toArray();
-        $productArray['quantity'] = $product->quantity; 
+        $productArray['quantity'] = $product->quantity;
         session()->push('cart', $productArray);
         $this->saveCart();
     }
@@ -78,8 +81,8 @@ trait CartTrait {
     public function getCartProduct(Product $product){
         $cart = session()->get('cart',[]);
         foreach($cart as $item){
-            if ($item['id'] === $product->id) { 
-                return (object) $item; 
+            if ($item['id'] === $product->id) {
+                return (object) $item;
             }
         }
         return null;

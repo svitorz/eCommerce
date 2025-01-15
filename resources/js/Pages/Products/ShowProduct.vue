@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps,ref } from "vue";
+import { defineProps,ref, reactive,watch } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Dropdown from "@/Components/Dropdown.vue";
@@ -17,23 +17,37 @@ const props = defineProps({
     isAdmin: Boolean,
 });
 
+const localProduct = reactive({ ...props.product });
+
+// Sincronize mudanças de `props.product` com `localProduct`
+watch(
+    () => props.product,
+    (newVal) => {
+        Object.assign(localProduct, newVal);
+    },
+    { deep: true, immediate: true }
+);
+// Atualize o valor local
+function updateProductQuantity(quantity) {
+    localProduct.value.quantity = quantity;
+}
 const toastRef = ref(null);
+
 function verifyQuantity(){
-    if(props.product.quantity > props.product.stock){
-        props.product.quantity = props.product.stock;
+    if(localProduct.value.quantity > localProduct.value.stock){
+        localProduct.value.quantity = localProduct.value.stock;
         toastRef.value.showToast(
-                    "The quantity cannot be higher than stock.",
-                    "error"
-                );
-    }else if(props.product.quantity < 1) {
-        props.product.quantity = 1;
+            "The quantity cannot be higher than stock.",
+            "error"
+        );
+    }else if(localProduct.value.quantity < 1) {
+        localProduct.value.quantity = 1;
         toastRef.value.showToast(
-                "The quantity cannot be lower than 1.",
-                "error"
-            );
+            "The quantity cannot be lower than 1.",
+            "error"
+        );
     }
 }
-
 // functions
 const form = useForm({
     deleteProductId: 0,
@@ -57,12 +71,12 @@ const deleteProduct = (deleteProductId) => {
 </script>
 
 <template>
-    <AppLayout :title="product?.name">
+    <AppLayout :title="localProduct?.name">
         <template #header>
             <h2
                 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
             >
-                {{ product.category.name }}
+                {{ localProduct.category.name }}
             </h2>
         </template>
         <div class="py-12">
@@ -106,7 +120,7 @@ const deleteProduct = (deleteProductId) => {
                                 :href="
                                     route(
                                         'products.edit',
-                                        product.id
+                                        localProduct.id
                                     )
                                 "
                             >
@@ -152,7 +166,7 @@ const deleteProduct = (deleteProductId) => {
                                     'opacity-25': form.processing,
                                 }"
                                 :disabled="form.processing"
-                                @click="deleteProduct(product.id)"
+                                @click="deleteProduct(localProduct.id)"
                             >
                                 Delete
                             </DangerButton>
@@ -187,7 +201,7 @@ const deleteProduct = (deleteProductId) => {
                                             class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
                                         >
                                             <!-- product name -->
-                                            {{ product.name }}
+                                            {{ localProduct.name }}
                                         </h1>
                                         <div
                                             class="mt-4 sm:items-center sm:gap-4 sm:flex"
@@ -195,7 +209,7 @@ const deleteProduct = (deleteProductId) => {
                                             <p
                                                 class="text-2xl font-extrabold text-gray-900 sm:text-3xl dark:text-white"
                                             >
-                                                ${{ product.price }}
+                                                ${{ localProduct.price }}
                                             </p>
 
                                             <div
@@ -288,20 +302,20 @@ const deleteProduct = (deleteProductId) => {
                                             class="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8"
                                         >
                                             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                {{product.stock}} avaliable.
+                                                {{localProduct.stock}} avaliable.
                                             </p>
                                             <div>
                                                 <InputLabel for="quantity" value="Quantity" />
                                                 <TextInput
-                                                    @input="verifyQuantity"
-                                                    id="product.quantity"
-                                                    v-model="props.product.quantity"
+                                                     @input="verifyQuantity"
+                                                    id="quantity"
+                                                    v-model="localProduct.quantity"
                                                     type="number"
                                                     class="mt-1 w-full h-12"
-                                                    :max="product.stock"
+                                                    :max="localProduct.stock"
                                                     required
                                                     autofocus
-                                            />
+                                                />
                                             </div>
                                         </div>
                                         <div
@@ -332,7 +346,7 @@ const deleteProduct = (deleteProductId) => {
                                                 </svg>
                                                 Add to favorites
                                             </a>
-                                            <CartButton @click.prevent="verifyQuantity" :product="product"/>
+                                            <CartButton @click="updateProductQuantity":product="localProduct"/>
                                         </div>
 
                                         <hr
@@ -342,7 +356,7 @@ const deleteProduct = (deleteProductId) => {
                                         <p
                                             class="mb-6 text-gray-500 dark:text-gray-400"
                                         >
-                                            {{ product.description }}
+                                            {{ localProduct.description }}
                                         </p>
                                     </div>
                                 </div>
