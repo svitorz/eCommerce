@@ -80,7 +80,10 @@ const logout = () => {
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
                             <div class="ms-3 relative">
                                 <!-- cart icon to manage products -->
-                                <NavLink>
+                                <NavLink
+                                    :href="route('cart.index')"
+                                    :active="route().current('cart.index')"
+                                >
                                     <svg
                                         class="w-5 h-5 -ms-2 me-2"
                                         aria-hidden="true"
@@ -380,7 +383,10 @@ const logout = () => {
                     class="sm:hidden"
                 >
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            :href="route('cart.index')"
+                            :active="route().current('cart.index')"
+                        >
                             <div class="flex items-center">
                                 <svg
                                     class="w-5 h-5 -ms-2 me-2"

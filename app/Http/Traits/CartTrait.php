@@ -4,87 +4,109 @@ namespace App\Http\Traits;
 
 use App\Models\Product;
 
-trait CartTrait {
-
+trait CartTrait
+{
     /**
      * Inicia o carrinho dentro das sessões.
      */
-    public function initializeCartSession()
+    public function initializeCartSession(): void
     {
-        session()->setName('cart');
-    }
-
-    public function saveCart()
-    {
-        session()->save();
+        if (!session()->has('cart')) {
+            session()->put('cart', []);
+        }
     }
 
     /**
      * Adiciona um item ao carrinho do usuário.
      */
-    public function addToCart(Product $product):void
+    public function addToCart(Product $product): void
     {
-        if($this->isInCart($product)){
+        $this->initializeCartSession();
+
+        if ($this->isInCart($product)) {
             return;
         }
+
         $productArray = $product->toArray();
         $productArray['quantity'] = $product->quantity;
-        session()->push('cart', $productArray);
-        $this->saveCart();
+        
+        $cart = session()->get('cart', []);
+        $cart[] = $productArray;
+
+        session()->put('cart', $cart);
     }
 
     /**
      * Remove um item do carrinho.
      */
-    public function removeFromCart(Product $product)
+    public function removeFromCart(Product $product): void
     {
+        $this->initializeCartSession();
+
         $cart = session()->get('cart', []);
-        if (($key = array_search($product, $cart)) !== false) {
-            unset($cart[$key]);
+        $cart = array_filter($cart, function ($item) use ($product) {
+            return $item['id'] !== $product->id;
+        });
+
+        session()->put('cart', array_values($cart));
+    }
+
+    /**
+     * Atualiza a quantidade de um item no carrinho.
+     */
+    public function updateQuantity(Product $product, int $quantity): void
+    {
+        $this->initializeCartSession();
+
+        $cart = session()->get('cart', []);
+        foreach ($cart as &$item) {
+            if ($item['id'] === $product->id) {
+                $item['quantity'] = $quantity;
+                break;
+            }
         }
+
         session()->put('cart', $cart);
-        $this->saveCart();
     }
 
     /**
      * Remove todos os produtos do carrinho.
      */
-    public function clearCart():void
+    public function clearCart(): void
     {
-        session()->remove('cart');
-        $this->saveCart();
+        session()->forget('cart');
     }
-
 
     /**
      * Retorna todos os produtos do carrinho.
      */
     public function getCartItems(): array
     {
-        return session()->get('cart');
+        return session()->get('cart', []);
     }
 
     /**
-     * Check if a product is in cart
+     * Verifica se um produto está no carrinho.
      */
     public function isInCart(Product $product): bool
     {
         $cart = session()->get('cart', []);
-        $ids = array_column($cart, 'id');
-        return in_array($product->id, $ids);
+        return collect($cart)->contains('id', $product->id);
     }
 
-
     /**
-    * Retorna um valor específico de dentro do carrinho (sessão).
-    * */
-    public function getCartProduct(Product $product){
-        $cart = session()->get('cart',[]);
-        foreach($cart as $item){
-            if ($item['id'] === $product->id) {
-                return (object) $item;
+     * Retorna um produto específico do carrinho.
+     */
+    public function getCartProduct(Product $product): ?array
+    {
+        $cart = session()->get('cart', []);
+
+        foreach ($cart as $item) {
+            if (isset($item['id']) && $item['id'] === $product->id) {
+                return $item;
             }
         }
+
         return null;
     }
 }

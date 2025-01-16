@@ -1,8 +1,8 @@
 <script setup>
 import CartButton from "@/Pages/Cart/Components/CartButton.vue";
+import { Link } from "@inertiajs/vue3";
 const props = defineProps({
     product: Array,
-    isAdmin: Boolean,
 });
 </script>
 <template>
@@ -100,10 +100,10 @@ const props = defineProps({
             </div>
         </div>
 
-        <a
+        <Link
             :href="route('products.show', product.id)"
             class="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white"
-            >{{ product.name }}</a
+            >{{ product.name }}</Link
         >
 
         <div class="mt-2 flex items-center gap-2">
@@ -178,6 +178,7 @@ const props = defineProps({
         <ul class="mt-2 flex items-center gap-4">
             <li class="flex items-center gap-2">
                 <svg
+                v-if="!product?.category?.name"
                     class="h-4 w-4 text-gray-500 dark:text-gray-400"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
@@ -185,6 +186,7 @@ const props = defineProps({
                     viewBox="0 0 24 24"
                 >
                     <path
+                    v-if="!product?.category?.name"
                         stroke="currentColor"
                         stroke-linecap="round"
                         stroke-linejoin="round"
@@ -193,7 +195,7 @@ const props = defineProps({
                     />
                 </svg>
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Fast Delivery
+                    {{product?.category?.name ?? 'Fast Delivery'}}
                 </p>
             </li>
 

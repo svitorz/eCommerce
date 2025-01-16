@@ -16,7 +16,7 @@ const addToCart = async () => {
         // Verifica se já está no carrinho
         if (localProduct.inCart) {
             toastRef.value.showToast(
-                "localProduct is already in cart!",
+                "Product is already in cart!",
                 "info"
             );
             loading.value = false;
@@ -49,7 +49,7 @@ const addToCart = async () => {
             },
             onError: () => {
                 toastRef.value.showToast(
-                    "Error adding localProduct to cart.",
+                    "Error adding product to cart.",
                     "error"
                 );
             },

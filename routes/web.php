@@ -35,16 +35,17 @@ Route::middleware('auth')->group( function () {
 
     Route::resource('products', ProductController::class);
 
+    Route::get('/cart',[CartController::class,'index'])->name('cart.index');
     Route::post('/cart/add/',[CartController::class, 'store'])->name('cart.store');
+    Route::put('/cart/{product}/update',[CartController::class,'update'])->name('cart.update');
     Route::get('/cart/destroy/{product}',[CartController::class, 'destroy'])->name('cart.destroy');
 
     Route::post('/address', [AddressController::class,'store'])->name('address.store');
 });
 
 Route::get('dumpSession', function(){
-    dd(request()->session());
+    dd(session()->get('cart'));
 });
-
 Route::get('clearSession', function(){
     return session()->flush('cart');
 });

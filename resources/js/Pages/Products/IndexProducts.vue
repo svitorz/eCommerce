@@ -4,6 +4,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SearchInput from "./Components/SearchInput.vue";
 import ProductCard from "./Components/ProductCard.vue";
 import SortDropdown from "./Components/SortDropdown.vue";
+import { Transition } from "vue";
 import { ref } from "vue";
 // end imports
 
@@ -42,19 +43,27 @@ const handleSortedProducts = (value) => {
                 <div
                     class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg"
                 >
+                <div v-if="products.length > 0">
                     <div
                         class="mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-3 xl:grid-cols-4"
                     >
+
                         <div
-                            v-for="product in products"
-                            class="m-2 rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800"
+                        v-for="product in products"
+                        class="m-2 rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800"
                         >
-                            <ProductCard
-                                :product="product"
-                                :isAdmin="isAdmin"
-                            />
-                        </div>
+                        <ProductCard
+                            :product="product"
+                            :isAdmin="isAdmin"
+                        />
                     </div>
+                </div>
+            </div>
+            <div v-else>
+                <h1 class="text-white text-center">
+                    No products found.
+                </h1>
+            </div>
                 </div>
             </div>
         </div>
