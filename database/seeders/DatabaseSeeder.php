@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Order;
 use App\Models\User;
+use Database\Factories\OrdersProductsFactory;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -29,5 +31,8 @@ class DatabaseSeeder extends Seeder
             'isAdmin' => false,
         ]);
         $this->call([CategorySeeder::class, ProductSeeder::class]);
+        Order::factory(10)->create()->each(function ($order) {
+            OrdersProductsFactory::new()->count(3)->create(['order_id' => $order->id]); // 3 produtos por pedido
+        });
     }
 }

@@ -5,15 +5,24 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Order;
+use Inertia\Inertia;
 
 class OrderController extends Controller
 {
+    private Order $order;
+    public function __construct(Order $order)
+    {
+        $this->order = $order;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return Inertia('Orders/IndexOrders',[
+            'orders' => $this->order->with('products')->get(),
+        ]);
     }
 
     /**
