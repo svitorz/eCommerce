@@ -22,7 +22,7 @@ class Product extends Model
 
     protected function getQuantityAttribute(): int
     {
-        return $this->attributes['quantity'];
+        return $this->attributes['quantity'] ?? 1;
     }
 
     protected function setQuantityAttribute($value)

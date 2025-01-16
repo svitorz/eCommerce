@@ -1,12 +1,12 @@
 <script setup>
-import { reactive,ref,computed } from "vue";
+import { reactive, ref, computed } from "vue";
 import { router } from "@inertiajs/vue3";
 import ToastManager from "@/Components/ToastManager.vue";
 
 const loading = ref(false);
 const toastRef = ref(null);
 
-const props = defineProps({ product: Array });
+const props = defineProps({ product: Object });
 
 const localProduct = reactive({ ...props.product });
 
@@ -23,7 +23,7 @@ const addToCart = async () => {
             return;
         }
 
-        if(localProduct.quantity > localProduct.stock){
+        if (localProduct.quantity > localProduct.stock) {
             toastRef.value.showToast(
                 "The quantity cannot be higher than stock.",
                 "error"
@@ -32,13 +32,14 @@ const addToCart = async () => {
             return;
         }
 
-        await router.post(route("cart.store", {
-            product_id: localProduct.id,
-            quantity: props.product.quantity,
-            only: ['product'],
-        }), {
-            preserveState: true,
+        await router.visit(route("cart.store"), {
+            method: "POST",
+            data: {
+                product_id: localProduct.id,
+                quantity: props.product.quantity,
+            },
             preserveScroll: true,
+            preserveState: true,
             onSuccess: () => {
                 toastRef.value.showToast(
                     "Product successfully added to cart!",
@@ -66,14 +67,11 @@ const addToCart = async () => {
 const removeFromCart = async (localProduct) => {
     loading.value = true;
     try {
-        await router.visit(route("cart.destroy", { product: localProduct}), {
+        await router.visit(route("cart.destroy", { product: localProduct }), {
             preserveState: true,
             preserveScroll: true,
             onSuccess: () => {
-                toastRef.value.showToast(
-                    "Product removed from cart!",
-                    "info"
-                );
+                toastRef.value.showToast("Product removed from cart!", "info");
                 localProduct.inCart = false;
                 localProduct.quantity = 1;
             },
