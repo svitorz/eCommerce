@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Order>
+ * 
  */
 class OrderFactory extends Factory
 {
@@ -20,8 +21,7 @@ class OrderFactory extends Factory
         $user = User::inRandomOrder()->first();
         return [
                 'subtotal' => $this->faker->randomFloat(2, 10, 500), // Valor entre 10 e 500
-                'status' => $this->faker->randomElement(['pending_payment','tranporting', 'completed', 'canceled']),
-                'order_date' => $this->faker->dateTimeBetween('-1 year', 'now'), // Data dentro do último ano
+                'status' => $this->faker->randomElement(['pending_payment','transporting', 'completed', 'canceled']),
                 'user_id' => $user,
         ];
     }

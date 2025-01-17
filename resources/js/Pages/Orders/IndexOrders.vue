@@ -1,7 +1,5 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import DangerButton from "@/Components/DangerButton.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { Link } from "@inertiajs/vue3";
 import OrderProgress from "./Components/OrderProgress.vue";
 defineProps({
@@ -15,7 +13,7 @@ defineProps({
             <h2 class="text-white">See your last order</h2>
         </template>
 
-        <div class="py-12 dark:text-white">
+        <div class="py-2 dark:text-white">
             <div
                 class="max-w-7xl mx-auto sm:px-6 lg:px-8"
                 v-if="orders.length > 0"
@@ -178,15 +176,7 @@ defineProps({
                                 <div
                                     class="space-y-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800"
                                 >
-                                    <OrderProgress :currentStatus="order.status" />
-
-                                    <div
-                                        class="gap-4 sm:flex sm:items-center justify-center items-center"
-                                    >
-                                        <DangerButton :type="button" class="w-full" :disabled="order.status === 'canceled'">
-                                            {{ order.status === "canceled" ? 'Canceled' : 'Cancel the order' }}
-                                        </DangerButton>
-                                    </div>
+                                    <OrderProgress :status="order.status" :order_date="order.created_at" :order_id="order.id" />
                                 </div>
                             </div>
                         </div>

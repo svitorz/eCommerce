@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Order;
-use Inertia\Inertia;
 
 class OrderController extends Controller
 {
@@ -20,6 +19,7 @@ class OrderController extends Controller
      */
     public function index()
     {
+        // dd($this->order->with('products')->get());
         return Inertia('Orders/IndexOrders',[
             'orders' => $this->order->with('products')->get(),
         ]);

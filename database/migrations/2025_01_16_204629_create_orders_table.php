@@ -16,8 +16,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->decimal('subtotal', 10, 2);
-            $table->enum('status', ['pending_payment','tranporting', 'completed', 'canceled']);
-            $table->date('order_date');
+            $table->enum('status', ['pending_payment','transporting', 'completed', 'canceled']);
             $table->foreignIdFor(User::class);
         });
     }
