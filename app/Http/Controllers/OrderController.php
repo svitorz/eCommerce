@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOrderRequest;
-use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Order;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -21,7 +21,7 @@ class OrderController extends Controller
     {
         // dd($this->order->with('products')->get());
         return Inertia('Orders/IndexOrders',[
-            'orders' => $this->order->with('products')->get(),
+            'orders' => $this->order->with('products')->orderBy('id', 'asc')->get(),
         ]);
     }
 
@@ -48,21 +48,21 @@ class OrderController extends Controller
     {
         //
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Order $order)
-    {
-        //
-    }
-
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateOrderRequest $request, Order $order)
+    public function update(Request $request, Order $order)
     {
-        //
+        $validated = $request->validate([
+            'status' => 'string|required'
+        ]);
+
+        if($validated['status'] != 'canceled'){
+            return abort(404);
+        }
+
+        $order->status = $validated['status'];
+        $order->save();
     }
 
     /**

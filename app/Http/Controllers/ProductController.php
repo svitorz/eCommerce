@@ -11,8 +11,6 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Support\Facades\DB;
-use Inertia\Inertia;
 
 class ProductController extends Controller implements HasMiddleware
 {

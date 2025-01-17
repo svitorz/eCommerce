@@ -1,5 +1,108 @@
+<script setup>
+import DangerButton from "@/Components/DangerButton.vue";
+import DialogModal from "@/Components/DialogModal.vue";
+import { defineProps } from "vue";
+import ToastManager from "@/Components/ToastManager.vue";
+import { ref } from "vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
+import { router } from "@inertiajs/vue3";
+const props = defineProps({
+    status: {
+        type: String,
+        required: true,
+        validator: (value) =>
+            [
+                "pending_payment",
+                "transporting",
+                "completed",
+                "canceled",
+            ].includes(value),
+    },
+    order_id: {
+        type: String,
+        required: true,
+    },
+    order_date: {
+        type: Date,
+        required: true,
+    },
+});
+
+const stepMapping = {
+    pending_payment: ["order_placed"],
+    transporting: ["order_placed", "payment", "shipping"],
+    completed: ["order_placed", "payment", "shipping", "delivered"],
+    canceled: [],
+};
+
+const isStepActive = (step) => {
+    return stepMapping[props.status]?.includes(step) || false;
+};
+
+const getTextColorClass = (step) => {
+    return isStepActive(step)
+        ? "text-primary-700 dark:text-primary-500"
+        : "text-gray-500 dark:text-gray-400";
+};
+const formattedDate = (order_date) => {
+    return new Date(order_date).toLocaleString("en-US", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+    });
+};
+
+const confirmingDelete = ref(false);
+const toastRef = ref(null);
+const confirmDelete = () => {
+    confirmingDelete.value = true;
+};
+
+const closeModal = () => {
+    confirmingDelete.value = false;
+};
+
+const cancelOrder = async (id) => {
+    if (props.status === "canceled") {
+        toastRef.value.showToast("Order is already canceled!", "error");
+        return;
+    }
+    try {
+        await router.visit(route("orders.update",id), {
+            method: 'PUT',
+            data: {
+                status: "canceled",
+            },
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => {
+                toastRef.value.showToast(
+                    "Product successfully added to cart!",
+                    "success"
+                );
+                props.status.value = 'canceled'; 
+            },
+            onError: () => {
+                toastRef.value.showToast(
+                    "Error adding product to cart.",
+                    "error"
+                );
+            },
+            onFinish: () => {
+                closeModal()
+            }
+        });
+    } catch (error) {
+        toastRef.value.showToast("Unexpected error", "error");
+        console.log(error);
+    }
+};
+</script>
 <template>
-    <ol class="relative ms-3 border-s border-gray-200 dark:border-gray-700">
+    <ol class="relative ms-3 border-s border-gray-200 dark:border-gray-700 border-b-8">
         <!-- Delivery -->
         <li class="mb-10 ms-6">
             <span
@@ -261,61 +364,33 @@
             </p>
         </li>
     </ol>
-    <DangerButton :type="button" class="w-full" :disabled="status === 'canceled'">
-        {{ status === "canceled" ? 'Already canceled.' : 'Cancel order.' }}
+    <DangerButton
+        v-if="status != 'completed'"
+        @click="confirmDelete"
+        :type="button"
+        class="w-full"
+        :disabled="status === 'canceled'"
+    >
+        {{ status === "canceled" ? "Already canceled." : "Cancel order." }}
     </DangerButton>
+    <DialogModal :show="confirmingDelete" @close="closeModal">
+        <template #title> Cancel this order? </template>
+
+        <template #content> This action is irreversible! </template>
+
+        <template #footer>
+            <SecondaryButton :type="button" @click="closeModal">
+                Go back
+            </SecondaryButton>
+
+            <DangerButton
+                :type="button"
+                class="ms-3"
+                @click="cancelOrder(order_id)"
+            >
+                Confirm
+            </DangerButton>
+        </template>
+    </DialogModal>
+    <ToastManager ref="toastRef" />
 </template>
-
-<script setup>
-import DangerButton from "@/Components/DangerButton.vue";
-import { defineProps } from "vue";
-
-const props = defineProps({
-    status: {
-        type: String,
-        required: true,
-        validator: (value) =>
-            [
-                "pending_payment",
-                "transporting",
-                "completed",
-                "canceled",
-            ].includes(value),
-    },
-    order_id: {
-        type: String,
-        required: true,
-    },
-    order_date: {
-        type: Date,
-        required: true,
-    },
-});
-
-const stepMapping = {
-    pending_payment: ["order_placed"],
-    transporting: ["order_placed", "payment", "shipping"],
-    completed: ["order_placed", "payment", "shipping", "delivered"],
-    canceled: [],
-};
-
-const isStepActive = (step) => {
-    return stepMapping[props.status]?.includes(step) || false;
-};
-
-const getTextColorClass = (step) => {
-    return isStepActive(step)
-        ? "text-primary-700 dark:text-primary-500"
-        : "text-gray-500 dark:text-gray-400";
-};
-const formattedDate = (order_date) => {
-    return new Date(order_date).toLocaleString("en-US", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-    });
-};
-</script>

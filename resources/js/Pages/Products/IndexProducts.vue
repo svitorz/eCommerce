@@ -4,7 +4,6 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SearchInput from "./Components/SearchInput.vue";
 import ProductCard from "./Components/ProductCard.vue";
 import SortDropdown from "./Components/SortDropdown.vue";
-import { Transition } from "vue";
 import { ref } from "vue";
 // end imports
 

@@ -2,9 +2,30 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { Link } from "@inertiajs/vue3";
 import OrderProgress from "./Components/OrderProgress.vue";
-defineProps({
+import { ref } from "vue";
+const props = defineProps({
     orders: Array,
 });
+const localOrders = ref([...props.orders]);
+const originalData = ref([...props.orders]);
+const filters = ref([
+    "pending_payment",
+    "transporting",
+    "completed",
+    "canceled",
+]);
+const currentFilter = ref("");
+
+const filterData = (filter) => {
+    currentFilter.value = filter;
+    if (filter === "") {
+        localOrders.value = [...originalData.value];
+    } else {
+        localOrders.value = originalData.value.filter(
+            (order) => order.status === filter
+        );
+    }
+};
 </script>
 
 <template>
@@ -16,11 +37,25 @@ defineProps({
         <div class="py-2 dark:text-white">
             <div
                 class="max-w-7xl mx-auto sm:px-6 lg:px-8"
-                v-if="orders.length > 0"
+                v-if="localOrders.length > 0"
             >
+                <div v-for="filter in filters" class="flex items-center p-1">
+                    <input
+                        @click="filterData(filter)"
+                        type="radio"
+                        :id="filter"
+                        :value="filter"
+                        name="filter"
+                        v-model="currentFilter"
+                    />
+                    <label :for="filter">{{
+                        filter.charAt(0).toUpperCase() +
+                        filter.slice(1).replace("_", " ")
+                    }}</label>
+                </div>
                 <section
                     class="bg-white py-8 antialiased dark:bg-gray-900 md:py-16"
-                    v-for="order in orders"
+                    v-for="order in localOrders"
                 >
                     <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
                         <h2
@@ -36,7 +71,10 @@ defineProps({
                             <div
                                 class="w-full divide-y divide-gray-200 overflow-hidden rounded-lg border border-gray-200 dark:divide-gray-700 dark:border-gray-700 lg:max-w-xl xl:max-w-2xl"
                             >
-                                <div class="space-y-4 p-6" v-for="product in order.products">
+                                <div
+                                    class="space-y-4 p-6"
+                                    v-for="product in order.products"
+                                >
                                     <div class="flex items-center gap-6">
                                         <a href="#" class="h-14 w-14 shrink-0">
                                             <img
@@ -52,11 +90,16 @@ defineProps({
                                         </a>
 
                                         <Link
-                                          :href="route('products.show',product.id)"  
+                                            :href="
+                                                route(
+                                                    'products.show',
+                                                    product.id
+                                                )
+                                            "
                                             class="min-w-0 flex-1 font-medium text-gray-900 hover:underline dark:text-white"
                                         >
                                             {{ product.name }}
-                                    </Link>
+                                        </Link>
                                     </div>
 
                                     <div
@@ -84,7 +127,7 @@ defineProps({
                                             <p
                                                 class="text-xl font-bold leading-tight text-gray-900 dark:text-white"
                                             >
-                                                ${{product.price}}
+                                                ${{ product.price }}
                                             </p>
                                         </div>
                                     </div>
@@ -105,7 +148,7 @@ defineProps({
                                             <dd
                                                 class="font-medium text-gray-900 dark:text-white"
                                             >
-                                                ${{ order.subtotal}}
+                                                ${{ order.subtotal }}
                                             </dd>
                                         </dl>
 
@@ -166,7 +209,7 @@ defineProps({
                                         <dd
                                             class="text-lg font-bold text-gray-900 dark:text-white"
                                         >
-                                            ${{ order.subtotal}}
+                                            ${{ order.subtotal }}
                                         </dd>
                                     </dl>
                                 </div>
@@ -176,12 +219,21 @@ defineProps({
                                 <div
                                     class="space-y-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800"
                                 >
-                                    <OrderProgress :status="order.status" :order_date="order.created_at" :order_id="order.id" />
+                                    <OrderProgress
+                                        :status="order.status"
+                                        :order_date="order.created_at"
+                                        :order_id="order.id"
+                                    />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
+            </div>
+            <div v-else>
+                <h1 class="text-center dark:text-white">
+                    No matches found.
+                </h1>
             </div>
         </div>
     </AppLayout>
