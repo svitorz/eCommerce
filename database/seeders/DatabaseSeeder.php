@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Address;
 use App\Models\Order;
 use App\Models\User;
 use Database\Factories\OrdersProductsFactory;
@@ -18,7 +19,7 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
+        $user = User::factory()->create([
             'name' => 'Vitor Souza',
             'email' => 'vitor@example.com',
             'password' => Hash::make('12345678'),
@@ -34,5 +35,15 @@ class DatabaseSeeder extends Seeder
         Order::factory(10)->create()->each(function ($order) {
             OrdersProductsFactory::new()->count(3)->create(['order_id' => $order->id]); // 3 produtos por pedido
         });
+
+        Address::factory()->create([
+            'country' => 'Brasil',
+            'state' => 'São Paulo',
+            'city' => 'Rio Preto',
+            'street' => 'Rua Exemplo',
+            'zip_code' => '12335-000',
+            'number' => 123,
+            'user_id' => $user
+        ]);
     }
 }

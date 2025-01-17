@@ -1,8 +1,7 @@
 <script setup>
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { Link } from '@inertiajs/vue3';
-const props = defineProps({ subtotal: Number
-});
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import { Link } from "@inertiajs/vue3";
+const props = defineProps({ subtotal: Number });
 </script>
 <template>
     <div class="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
@@ -44,12 +43,10 @@ const props = defineProps({ subtotal: Number
                 </dl>
             </div>
 
-            <PrimaryButton
-                :type="button"
-                @click="sendOrder"
-                class="flex justify-center items-center w-full"
-            >
-                Proceed to Checkout
+            <PrimaryButton class="flex justify-center items-center w-full">
+                <Link :href="route('orders.create')">
+                    Proceed to Checkout
+                </Link>
             </PrimaryButton>
 
             <div class="flex items-center justify-center gap-2">

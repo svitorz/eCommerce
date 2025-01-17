@@ -10,6 +10,11 @@ import ActionMessage from "@/Components/ActionMessage.vue";
 
 const props = defineProps({
     address: Object,
+    show: {
+        type: Boolean,
+        required: false,
+        default: true,
+    },
 });
 
 const form = useForm({
@@ -22,19 +27,20 @@ const form = useForm({
 });
 
 const saveAddress = () => {
-    form.post(route('address.store'), {
+    form.post(route("address.store"), {
         preserveScroll: true,
     });
-}
+};
 </script>
 
 <template>
     <FormSection @submitted="saveAddress">
         <template #title> Address Information </template>
         <template #description>
-            Update your account's profile address.
+            {{ show ? "Update your account's profile" : "Confirm your" }}
+            address.
         </template>
-        <template #form>
+        <template #form :class="{ 'flex justify-center items-center': !show }">
             <div class="col-span-6 sm:col-span-4">
                 <!-- zip code -->
                 <InputLabel for="zip_code" value="Zip code" />
