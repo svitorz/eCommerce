@@ -261,9 +261,13 @@
             </p>
         </li>
     </ol>
+    <DangerButton :type="button" class="w-full" :disabled="status === 'canceled'">
+        {{ status === "canceled" ? 'Already canceled.' : 'Cancel order.' }}
+    </DangerButton>
 </template>
 
 <script setup>
+import DangerButton from "@/Components/DangerButton.vue";
 import { defineProps } from "vue";
 
 const props = defineProps({
