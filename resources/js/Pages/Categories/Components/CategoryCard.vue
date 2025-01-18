@@ -3,11 +3,11 @@ import DropdownLink from "@/Components/DropdownLink.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import DialogModal from "@/Components/DialogModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import DangerButton from "@/Components/DangerButton.vue"; 
+import DangerButton from "@/Components/DangerButton.vue";
 import { useForm } from "@inertiajs/vue3";
 import { ref } from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-
+import { Link } from "@inertiajs/vue3";
 defineProps({
     category: Object,
     isAdmin: Boolean,
@@ -114,11 +114,11 @@ const deleteCategory = (deleteCategoryId) => {
                 {{ category.description }}
             </p>
 
-            <PrimaryButton :type="button">
-                <a :href="route('categories.products',category.id)">
+            <Link :href="route('categories.products',category.id)">
+                <PrimaryButton :type="button">
                     See related Products
-                </a>
-            </PrimaryButton>
+                </PrimaryButton>
+            </Link>
         </div>
     </div>
 </template>

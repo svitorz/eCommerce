@@ -43,11 +43,11 @@ const props = defineProps({ subtotal: Number });
                 </dl>
             </div>
 
-            <PrimaryButton class="flex justify-center items-center w-full">
-                <Link :href="route('orders.create')">
+            <Link :href="route('orders.create')">
+                <PrimaryButton  class="flex justify-center items-center w-full">
                     Proceed to Checkout
-                </Link>
-            </PrimaryButton>
+                </PrimaryButton>
+            </Link>
 
             <div class="flex items-center justify-center gap-2">
                 <span

@@ -24,6 +24,11 @@ const step = ref(1);
                     :address="$page.props.auth.user.address"
                 />
             </div>
+            <div class="p-5 block" v-if="step === 2">
+                <h1>
+                    Payment
+                </h1>
+            </div>
             <div class="float-end p-5">
                 <SecondaryButton @click="step--" v-if="step > 1">
                     Go back
@@ -32,8 +37,8 @@ const step = ref(1);
                 <PrimaryButton v-if="step == 1" @click="step++">
                     Next
                 </PrimaryButton>
-                
-                <PrimaryButton v-if="step == 2">
+
+                <PrimaryButton v-if="step == 2" class="ms-4">
                     Finish
                 </PrimaryButton>
             </div>

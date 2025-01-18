@@ -65,6 +65,7 @@ const logout = () => {
                                 <NavLink
                                     :href="route('orders.index')"
                                     :active="route().current('orders.*')"
+                                    v-if="$page.props.auth.user"
                                 >
                                     Orders
                                 </NavLink>

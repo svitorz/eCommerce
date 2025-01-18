@@ -93,7 +93,7 @@ class CartController extends Controller
         $cartItems = $this->getCartItems();
 
         if(empty($cartItems)){
-            return Product::distinct()->with('category')->limit($limit)->get();
+            return Product::distinct()->with('category')->limit($limit)->get()->toArray();
         }
 
         // Inicializa um array para armazenar as categorias dos produtos no carrinho

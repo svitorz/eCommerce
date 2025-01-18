@@ -11,6 +11,7 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Address;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -69,7 +70,10 @@ class User extends Authenticatable
 
     public function isAdmin():bool
     {
-        return $this->isAdmin;
+        if(Auth::check()){
+            return $this->isAdmin;
+        }
+        return false;
     }
 
     public function address():HasOne

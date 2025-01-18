@@ -17,27 +17,21 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+Route::middleware('auth')->group( function () {
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
-});
-Route::middleware('auth')->group( function () {
-    
     // busca específica de categorias.
     Route::get('/categories/{category}/products',[CategoryController::class, 'getProducts'])->name('categories.products');
-    
+
     //buscas
     Route::get('/search/{searchKey}', [ProductController::class, 'searchProduct'])->name('search');
-    
+
     Route::resource('categories', CategoryController::class);
-    
+
     Route::resource('products', ProductController::class);
+
 
     Route::resource('orders', OrderController::class);
 
@@ -49,11 +43,4 @@ Route::middleware('auth')->group( function () {
 
     // endereço
     Route::post('/address', [AddressController::class,'store'])->name('address.store');
-});
-
-Route::get('dumpSession', function(){
-    dd(session()->get('cart'));
-});
-Route::get('clearSession', function(){
-    return session()->flush('cart');
 });

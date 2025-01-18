@@ -17,7 +17,7 @@ class CategoryController extends Controller implements HasMiddleware
     public Category $category;
 
     /**
-     * Construct method 
+     * Construct method
     */
     public function __construct(Category $category) {
         $this->category = $category;
@@ -49,11 +49,10 @@ class CategoryController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        $user = Auth::user();
         return Inertia('Categories/IndexCategory',
         [
-            'categories' => $this->category->get(), 
-            'isAdmin'=> $user->isAdmin 
+            'categories' => $this->category->get(),
+            'isAdmin'=> request()->user()->isAdmin(),
     ]);
     }
 
@@ -62,9 +61,9 @@ class CategoryController extends Controller implements HasMiddleware
      */
     public function create()
     {
-        return Inertia('Categories/Forms/CreateCategory', 
+        return Inertia('Categories/Forms/CreateCategory',
         [
-            'route' => route('categories.store'), 
+            'route' => route('categories.store'),
             'method' => 'POST'
         ]);
     }
@@ -84,9 +83,9 @@ class CategoryController extends Controller implements HasMiddleware
     public function edit(Category $category)
     {
         return Inertia('Categories/Forms/CreateCategory',
-         [ 
-            'category' => $category, 
-            'route' => route('categories.update', $category->id), 
+         [
+            'category' => $category,
+            'route' => route('categories.update', $category->id),
             'method' => 'PUT'
         ]);
     }
