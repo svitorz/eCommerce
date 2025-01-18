@@ -21,7 +21,7 @@ class CartController extends Controller
         return Inertia::render('Cart/IndexCart',[
             'products' => (array) $this->getCartItems(), // vem da trait.
             'subtotal' => number_format($this->calculateSubTotal(), 2, '.', ''),
-            'recommended_products' => $this->getRecommendedProducts(),
+            'recommended_products' => (array) $this->getRecommendedProducts(),
             'is_admin' => auth()->user()->isAdmin(),
         ]);
     }
@@ -32,13 +32,13 @@ class CartController extends Controller
     public function calculateSubTotal(): float
     {
         $cartProducts = $this->getCartItems();
-        
+
         $subtotal = 0;
-        
+
         foreach ($cartProducts as $product) {
             $subtotal += $product['quantity'] * $product['price'];
         }
-        
+
         return $subtotal;
     }
 
@@ -63,7 +63,7 @@ class CartController extends Controller
             'success' => true,
         ]);;
     }
-    
+
     public function update(Product $product, Request $request)
     {
         $validated = $request->validate([
@@ -91,22 +91,22 @@ class CartController extends Controller
     {
         // Obtenha os produtos no carrinho
         $cartItems = $this->getCartItems();
-        
+
         if(empty($cartItems)){
             return Product::distinct()->with('category')->limit($limit)->get();
         }
 
         // Inicializa um array para armazenar as categorias dos produtos no carrinho
         $categories = [];
-        
+
         // Preenche o array com as categorias dos produtos no carrinho
         foreach ($cartItems as $item) {
             $categories[] = $item['category_id']; // Assumindo que o produto tem o campo 'category_id'
         }
-        
+
         // Remover duplicatas para evitar que busquemos produtos de categorias repetidas
         $categories = array_unique($categories);
-        
+
         // Buscar produtos recomendados
         // Excluindo os produtos que já estão no carrinho e filtrando pelas categorias
         $recommendedProducts = Product::whereIn('category_id', $categories)
@@ -114,7 +114,7 @@ class CartController extends Controller
             ->with('category')
             ->limit($limit) // Limite de 3 produtos, mas pode ser ajustado
             ->get();
-    
-        return $recommendedProducts;
+
+        return $recommendedProducts->toArray();
     }
 }

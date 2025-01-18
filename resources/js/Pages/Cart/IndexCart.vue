@@ -4,13 +4,15 @@ import ToastManager from "@/Components/ToastManager.vue";
 import ProductCard from "../Products/Components/ProductCard.vue";
 import OrderSummary from "@/Pages/Orders/Components/OrderSummary.vue";
 import OrderProductCard from "../Orders/Components/OrderProductCard.vue";
+
 const props = defineProps({
     products: Array,
     subtotal: Number,
-    recommended_products: { type: Array },
+    recommended_products: Array,
     is_admin: Boolean,
 });
-
+console.log("recommended products:",props.recommended_products);
+console.log("is array?", Array.isArray(props.recommended_products));
 </script>
 
 <template>
@@ -44,10 +46,11 @@ const props = defineProps({
                                 >
                                 <OrderProductCard :product="product"/>
                             </div>
+                                <OrderSummary :subtotal="subtotal" />
                             </div>
                             <div
-                                class="hidden xl:mt-8 xl:block"
-                                v-if="recommended_products.length > 0"
+                                class=" xl:mt-8 xl:block"
+                                v-if="props.recommended_products.length > 0 && Array.isArray(props.recommended_products)"
                             >
                                 <h3
                                     class="text-2xl font-semibold text-gray-900 dark:text-white"
@@ -58,15 +61,17 @@ const props = defineProps({
                                     class="mt-6 grid grid-cols-3 gap-4 sm:mt-8"
                                 >
                                     <div
-                                        v-for="recommended in recommended_products"
+                                        v-for="recommended in props.recommended_products"
                                         class="space-y-6 overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800"
                                     >
                                         <ProductCard :product="recommended" />
                                     </div>
                                 </div>
                             </div>
+                            <div v-else>
+                                <h1> No recommendations.</h1>
+                            </div>
                         </div>
-                        <OrderSummary :subtotal="subtotal" />
                     </div>
                 </div>
             </section>
