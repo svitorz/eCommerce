@@ -6,6 +6,7 @@ use App\Http\Traits\CartTrait;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Http\Controllers\calculateSubTotalController;
 
 class CartController extends Controller
 {
@@ -16,30 +17,14 @@ class CartController extends Controller
         $this->initializeCartSession();
     }
 
-    public function index()
+    public function index(calculateSubTotalController $subtotalCalculator)
     {
         return Inertia::render('Cart/IndexCart',[
             'products' => (array) $this->getCartItems(), // vem da trait.
-            'subtotal' => number_format($this->calculateSubTotal(), 2, '.', ''),
+            'subtotal' => number_format($subtotalCalculator->calculate(), 2, '.', ''),
             'recommended_products' => (array) $this->getRecommendedProducts(),
             'is_admin' => auth()->user()->isAdmin(),
         ]);
-    }
-
-    /**
-     * Retorna o valor total dos itens do carrinho do usuário.
-     */
-    public function calculateSubTotal(): float
-    {
-        $cartProducts = $this->getCartItems();
-
-        $subtotal = 0;
-
-        foreach ($cartProducts as $product) {
-            $subtotal += $product['quantity'] * $product['price'];
-        }
-
-        return $subtotal;
     }
 
     public function store(Request $request)

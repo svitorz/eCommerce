@@ -4,6 +4,7 @@ use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -43,4 +44,6 @@ Route::middleware('auth')->group( function () {
 
     // endereço
     Route::post('/address', [AddressController::class,'store'])->name('address.store');
+
+    Route::post('/payment/{Order}',[PaymentController::class,'store'])->name('payment.store');
 });

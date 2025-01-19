@@ -5,13 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Order extends Model
 {
     /** @use HasFactory<\Database\Factories\OrderFactory> */
     use HasFactory;
 
-    protected $fillable = ['subtotal', 'status', 'order_date'];
+    protected $fillable = ['subtotal', 'status'];
 
     public function products()
     {
@@ -23,5 +24,10 @@ class Order extends Model
     public function users(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function payments(): hasOne
+    {
+        return $this->hasOne(Payment::class);
     }
 }

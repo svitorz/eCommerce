@@ -80,14 +80,14 @@ const cancelOrder = async (id) => {
             preserveState: true,
             onSuccess: () => {
                 toastRef.value.showToast(
-                    "Product successfully added to cart!",
+                    "Order canceled!",
                     "success"
                 );
                 props.status.value = 'canceled'; 
             },
             onError: () => {
                 toastRef.value.showToast(
-                    "Error adding product to cart.",
+                    "Error to cancel order.",
                     "error"
                 );
             },

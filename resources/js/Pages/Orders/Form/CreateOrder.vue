@@ -1,10 +1,16 @@
 <script setup>
 import { ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import AddressForm from "@/Pages/Address/Forms/AddressForm.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import AddressForm from "@/Pages/Address/Forms/AddressForm.vue";
+import PaymentForm from "@/Pages/Orders/Form/PaymentForm.vue";
 const step = ref(1);
+const props = defineProps({
+    amount: Number,
+    order: Object,
+});
+console.log(props.order);
 </script>
 
 <template>
@@ -25,9 +31,7 @@ const step = ref(1);
                 />
             </div>
             <div class="p-5 block" v-if="step === 2">
-                <h1>
-                    Payment
-                </h1>
+               <PaymentForm :amount="amount" :orderId="order.id" />
             </div>
             <div class="float-end p-5">
                 <SecondaryButton @click="step--" v-if="step > 1">
@@ -36,10 +40,6 @@ const step = ref(1);
 
                 <PrimaryButton v-if="step == 1" @click="step++">
                     Next
-                </PrimaryButton>
-
-                <PrimaryButton v-if="step == 2" class="ms-4">
-                    Finish
                 </PrimaryButton>
             </div>
         </div>

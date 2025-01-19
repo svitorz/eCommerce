@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreOrderRequest;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use App\Http\Controllers\calculateSubTotalController;
 
 class OrderController extends Controller
 {
@@ -28,15 +29,17 @@ class OrderController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(calculateSubTotalController $subtotalCalculator)
     {
-        return Inertia('Orders/Form/CreateOrder');
+        return Inertia('Orders/Form/CreateOrder', [
+            'amount' => number_format($subtotalCalculator->calculate(), 2, '.', ''),
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreOrderRequest $request)
+    public function store(Request $request)
     {
         //
     }
