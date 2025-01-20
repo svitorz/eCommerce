@@ -26,6 +26,10 @@ const props = defineProps({
         type: Date,
         required: true,
     },
+    payd_at: {
+        type: Date,
+        required: true,
+    },
 });
 
 const stepMapping = {
@@ -83,7 +87,7 @@ const cancelOrder = async (id) => {
                     "Order canceled!",
                     "success"
                 );
-                props.status.value = 'canceled'; 
+                props.status.value = 'canceled';
             },
             onError: () => {
                 toastRef.value.showToast(
@@ -269,6 +273,8 @@ const cancelOrder = async (id) => {
             </h4>
             <p class="text-sm" :class="getTextColorClass('payment')">
                 Payment confirmed
+                <br />
+                {{ formattedDate(payd_at) }}
             </p>
         </li>
 

@@ -33,7 +33,11 @@ class DatabaseSeeder extends Seeder
         ]);
         $this->call([CategorySeeder::class, ProductSeeder::class]);
         Order::factory(10)->create()->each(function ($order) {
-            OrdersProductsFactory::new()->count(3)->create(['order_id' => $order->id]); // 3 produtos por pedido
+            OrdersProductsFactory::new()->count(3)->create(['order_id' => $order->id]);
+
+            \App\Models\Payment::factory()->create([
+                'order_id' => $order->id,
+            ]);
         });
 
         Address::factory()->create([

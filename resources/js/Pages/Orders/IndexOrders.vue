@@ -26,6 +26,7 @@ const filterData = (filter) => {
         );
     }
 };
+console.log(props.orders);
 </script>
 
 <template>
@@ -223,6 +224,7 @@ const filterData = (filter) => {
                                         :status="order.status"
                                         :order_date="order.created_at"
                                         :order_id="order.id"
+                                        :payd_at="order.payments.created_at"
                                     />
                                 </div>
                             </div>

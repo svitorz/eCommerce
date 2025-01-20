@@ -25,7 +25,7 @@ class OrderController extends Controller
     {
         // dd($this->order->with('products')->get());
         return Inertia('Orders/IndexOrders',[
-            'orders' => $this->order->with('products')->orderBy('id', 'asc')->get(),
+            'orders' => $this->order->with(['payments','products'])->orderBy('id', 'asc')->get(),
         ]);
     }
 
