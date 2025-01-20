@@ -10,7 +10,6 @@ const props = defineProps({
     amount: Number,
     order: Object,
 });
-console.log(props.order);
 </script>
 
 <template>
@@ -31,7 +30,7 @@ console.log(props.order);
                 />
             </div>
             <div class="p-5 block" v-if="step === 2">
-               <PaymentForm :amount="amount" :orderId="order.id" />
+               <PaymentForm :amount="amount"/>
             </div>
             <div class="float-end p-5">
                 <SecondaryButton @click="step--" v-if="step > 1">

@@ -6,21 +6,19 @@ import { router } from '@inertiajs/vue3'
 
 const props = defineProps({
     amount:Number,
-    orderId:Number,
 });
 
-const id = ref(props.orderId);
 // Estado reativo para o valor do input
 const formattedDate = ref("");
 
 const form = useForm({
-    fullName: null,
-    cardNumber: "",
-    ccv: null,
-    cardExpiration: null,
+    fullName: "Vitor Fábio",
+    cardNumber: "1231 2312 3123 1231",
+    ccv: 123,
+    cardExpiration: "02/2026",
 });
 function submit(){
-    router.post(route('payment.store',id), form);
+    router.post(route('orders.store'), form);
 }
 
 function applyCardMask(event) {
@@ -67,7 +65,7 @@ function formatInput(event) {
           <div class="mb-6 grid grid-cols-2 gap-4">
             <div class="col-span-2 sm:col-span-1">
               <label for="full_name" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"> Full name (as displayed on card)* </label>
-              <input type="text" id="full_name" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="Bonnie Green" required />
+              <input v-model="form.fullName" type="text" id="full_name" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="Bonnie Green" required />
             </div>
 
             <div class="col-span-2 sm:col-span-1">

@@ -4,7 +4,7 @@
 > Cadastro de categorias
 > Cadastro de produtos 
 > Implementação de carrinhos (com sessão) 
-- Emissão de pedidos
+> Emissão de pedidos
 - Implementação da tela incial com carrossel de produtos
 
 ### Extras

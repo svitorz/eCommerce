@@ -45,5 +45,8 @@ Route::middleware('auth')->group( function () {
     // endereço
     Route::post('/address', [AddressController::class,'store'])->name('address.store');
 
-    Route::post('/payment/{Order}',[PaymentController::class,'store'])->name('payment.store');
+    Route::post('/payment',[PaymentController::class,'store'])->name('payment.store');
+});
+Route::get('/session', function(){
+    dd(request()->session());
 });

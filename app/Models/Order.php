@@ -12,7 +12,7 @@ class Order extends Model
     /** @use HasFactory<\Database\Factories\OrderFactory> */
     use HasFactory;
 
-    protected $fillable = ['subtotal', 'status'];
+    protected $fillable = ['subtotal', 'status','user_id'];
 
     public function products()
     {
