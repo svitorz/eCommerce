@@ -1,6 +1,14 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import SearchInput from "./Products/Components/SearchInput.vue";
+import CarouselProducts from "./Products/Components/CarouselProducts.vue";
+const props = defineProps({
+    products: {
+        type: Array,
+        required: true,
+        default: () => []  // Add default empty array
+    }
+});
 </script>
 
 <template>
@@ -24,6 +32,9 @@ import SearchInput from "./Products/Components/SearchInput.vue";
                         </h1>
                         <SearchInput />
                     </div>
+                </div>
+                <div >
+                    <CarouselProducts :products="products" v-if="products?.length > 0" />
                 </div>
             </div>
         </div>
