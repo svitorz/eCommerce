@@ -17,12 +17,18 @@ class CartController extends Controller
         $this->initializeCartSession();
     }
 
-    public function index(calculateSubTotalController $subtotalCalculator)
+    public function getAll()
+    {
+        return $this->getCartItems();
+    }
+
+
+    public function index(calculateSubTotalController $subtotalCalculator, GetRecommendedProductsController $recommendedProducts)
     {
         return Inertia::render('Cart/IndexCart',[
             'products' => (array) $this->getCartItems(), // vem da trait.
             'subtotal' => number_format($subtotalCalculator->calculate(), 2, '.', ''),
-            'recommended_products' => (array) $this->getRecommendedProducts(),
+            'recommended_products' => (array) $recommendedProducts->handle(),
             'is_admin' => auth()->user()->isAdmin(),
         ]);
     }
@@ -67,39 +73,5 @@ class CartController extends Controller
     public function destroy(Product $product)
     {
         $this->removefromCart($product);
-    }
-
-    /**
-     * Retorna produtos com base nas escolhas do usuário.
-     */
-    public function getRecommendedProducts(int $limit = 3)
-    {
-        // Obtenha os produtos no carrinho
-        $cartItems = $this->getCartItems();
-
-        if(empty($cartItems)){
-            return Product::distinct()->with('category')->limit($limit)->get()->toArray();
-        }
-
-        // Inicializa um array para armazenar as categorias dos produtos no carrinho
-        $categories = [];
-
-        // Preenche o array com as categorias dos produtos no carrinho
-        foreach ($cartItems as $item) {
-            $categories[] = $item['category_id']; // Assumindo que o produto tem o campo 'category_id'
-        }
-
-        // Remover duplicatas para evitar que busquemos produtos de categorias repetidas
-        $categories = array_unique($categories);
-
-        // Buscar produtos recomendados
-        // Excluindo os produtos que já estão no carrinho e filtrando pelas categorias
-        $recommendedProducts = Product::whereIn('category_id', $categories)
-            ->whereNotIn('id', array_column($cartItems, 'id')) // Exclui produtos já no carrinho
-            ->with('category')
-            ->limit($limit) // Limite de 3 produtos, mas pode ser ajustado
-            ->get();
-
-        return $recommendedProducts->toArray();
     }
 }
