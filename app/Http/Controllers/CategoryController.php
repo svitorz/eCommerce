@@ -51,7 +51,7 @@ class CategoryController extends Controller implements HasMiddleware
     {
         return Inertia('Categories/IndexCategory',
         [
-            'categories' => $this->category->get(),
+            'categories' => $this->category->paginate(6),
             'isAdmin'=> request()->user()->isAdmin(),
     ]);
     }

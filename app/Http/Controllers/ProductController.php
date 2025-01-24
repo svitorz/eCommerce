@@ -39,16 +39,16 @@ class ProductController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        $products = $this->product->with('category')->get()->map(function ($product) {
+        $products = $this->product->load('category')->paginate(12)->through(function ($product) {
             $cartProduct = $this->getCartProduct($product);
-            return [
-                'id' => $product->id,
-                'name' => $product->name,
-                'price' => $product->price,
-                'stock' => $product->stock,
-                'inCart' => $this->isInCart($product),
-                'quantity' => $cartProduct->quantity ?? 1,
-            ];
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'price' => $product->price,
+                    'stock' => $product->stock,
+                    'inCart' => $this->isInCart($product),
+                    'quantity' => $cartProduct->quantity ?? 1,
+                ];
         });
         return Inertia('Products/IndexProducts',[
             'products' => $products,

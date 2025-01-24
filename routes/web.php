@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\GetRecommendedProductsController;
 
+
+use App\Models\Product;
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -47,9 +50,7 @@ Route::middleware('auth')->group( function () {
 
     // endereço
     Route::post('/address', [AddressController::class,'store'])->name('address.store');
-
-    Route::post('/payment',[PaymentController::class,'store'])->name('payment.store');
 });
-Route::get('/session', function(){
-    dd(request()->session());
+Route::get('/dumpController', function(){
+    dd(Product::distinct()->paginate(15));
 });
