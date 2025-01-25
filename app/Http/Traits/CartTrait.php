@@ -29,7 +29,7 @@ trait CartTrait
 
         $productArray = $product->toArray();
         $productArray['quantity'] = $product->quantity;
-        
+
         $cart = session()->get('cart', []);
         $cart[] = $productArray;
 
@@ -80,9 +80,28 @@ trait CartTrait
     /**
      * Retorna todos os produtos do carrinho.
      */
-    public function getCartItems(): array
+    public function getCartItems()
     {
-        return session()->get('cart', []);
+        $cart = session()->get('cart', []);
+        $productIds = collect($cart)->pluck('product_id');
+
+        $products = Product::with('category', 'favoritedByUsers')
+            ->whereIn('id', $productIds)
+            ->get();
+
+        return collect($cart)->map(function ($item) use ($products) {
+            $product = $products->firstWhere('id', $item['product_id']);
+
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'price' => $product->price,
+                'quantity' => $item['quantity'],
+                'total' => $product->price * $item['quantity'],
+                'isFavorite' => $product->isFavorite,
+                'category' => $product->category->name,
+            ];
+        });
     }
 
     /**

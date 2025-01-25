@@ -48,6 +48,7 @@ class ProductController extends Controller implements HasMiddleware
                     'stock' => $product->stock,
                     'inCart' => $this->isInCart($product),
                     'quantity' => $cartProduct->quantity ?? 1,
+                    'isFavorite' => $product->favoritedByUsers()->where('user_id',auth()->user()->id)->exists(),
                 ];
         });
         return Inertia('Products/IndexProducts',[
@@ -100,15 +101,22 @@ class ProductController extends Controller implements HasMiddleware
      */
     public function show(Product $product)
     {
-        $product->inCart = $this->isInCart($product);
-        if($product->inCart){
+        $product->load('category')->through(function ($product) {
             $cartProduct = $this->getCartProduct($product);
-            $product->quantity = $cartProduct['quantity'];
-        }
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'price' => $product->price,
+                    'stock' => $product->stock,
+                    'inCart' => $this->isInCart($product),
+                    'quantity' => $cartProduct->quantity ?? 1,
+                    'isFavorite' => $product->favoritedByUsers()->where('user_id',auth()->user()->id)->exists(),
+                ];
+        });
 
         return Inertia('Products/ShowProduct',
         [
-            'product' => $product->load('category'),
+            'product' => $product,
             'isAdmin' => request()->user()->isAdmin(),
         ]);
     }

@@ -14,7 +14,7 @@ import ToastManager from "@/Components/ToastManager.vue";
 import FavoriteButton from "../Favorites/FavoriteButton.vue";
 
 const props = defineProps({
-    product: Array,
+    product: Object,
     isAdmin: Boolean,
 });
 
