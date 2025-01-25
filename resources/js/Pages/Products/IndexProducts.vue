@@ -14,18 +14,21 @@ const products = ref([...props.products.data]);
 const handleSortedProducts = (value) => {
     products.value = value;
 };
-
 </script>
 
 <template>
     <AppLayout title="Product">
         <template #header>
-            <div v-if="isAdmin">
+            <div>
                 <h2
                     class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
                 >
                     All Products
-                    <PrimaryButton :type="button" class="float-end">
+                    <PrimaryButton
+                        :type="button"
+                        class="float-end"
+                        v-if="isAdmin"
+                    >
                         <a href="/products/create"> Create Product </a>
                     </PrimaryButton>
                 </h2>

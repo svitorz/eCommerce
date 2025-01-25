@@ -39,7 +39,7 @@ class ProductController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        $products = $this->product->load('category')->paginate(12)->through(function ($product) {
+        $products = $this->product->load('category')->paginate(8)->through(function ($product) {
             $cartProduct = $this->getCartProduct($product);
                 return [
                     'id' => $product->id,

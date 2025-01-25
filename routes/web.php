@@ -50,6 +50,9 @@ Route::middleware('auth')->group( function () {
 
     // endereço
     Route::post('/address', [AddressController::class,'store'])->name('address.store');
+
+    Route::post('/{user}/{product}', [App\Http\Controllers\FavoriteProductsController::class, 'store'])->name('favorite.store');
+    Route::delete('/{user}/{product}', [App\Http\Controllers\FavoriteProductsController::class, 'destroy'])->name('favorite.destroy');
 });
 Route::get('/dumpController', function(){
     dd(Product::distinct()->paginate(15));

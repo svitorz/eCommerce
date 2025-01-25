@@ -22,7 +22,7 @@ const filterData = (filter) => {
         localOrders.value = [...originalData.value];
     } else {
         localOrders.value = originalData.value.filter(
-            (order) => order.status === filter
+            (order) => order.status === filter,
         );
     }
 };
@@ -94,7 +94,7 @@ console.log(props.orders);
                                             :href="
                                                 route(
                                                     'products.show',
-                                                    product.id
+                                                    product.id,
                                                 )
                                             "
                                             class="min-w-0 flex-1 font-medium text-gray-900 hover:underline dark:text-white"
@@ -152,51 +152,6 @@ console.log(props.orders);
                                                 ${{ order.subtotal }}
                                             </dd>
                                         </dl>
-
-                                        <dl
-                                            class="flex items-center justify-between gap-4"
-                                        >
-                                            <dt
-                                                class="font-normal text-gray-500 dark:text-gray-400"
-                                            >
-                                                Savings
-                                            </dt>
-                                            <dd
-                                                class="text-base font-medium text-green-500"
-                                            >
-                                                -$299.00
-                                            </dd>
-                                        </dl>
-
-                                        <dl
-                                            class="flex items-center justify-between gap-4"
-                                        >
-                                            <dt
-                                                class="font-normal text-gray-500 dark:text-gray-400"
-                                            >
-                                                Store Pickup
-                                            </dt>
-                                            <dd
-                                                class="font-medium text-gray-900 dark:text-white"
-                                            >
-                                                $99
-                                            </dd>
-                                        </dl>
-
-                                        <dl
-                                            class="flex items-center justify-between gap-4"
-                                        >
-                                            <dt
-                                                class="font-normal text-gray-500 dark:text-gray-400"
-                                            >
-                                                Tax
-                                            </dt>
-                                            <dd
-                                                class="font-medium text-gray-900 dark:text-white"
-                                            >
-                                                $799
-                                            </dd>
-                                        </dl>
                                     </div>
 
                                     <dl
@@ -233,9 +188,7 @@ console.log(props.orders);
                 </section>
             </div>
             <div v-else>
-                <h1 class="text-center dark:text-white">
-                    No matches found.
-                </h1>
+                <h1 class="text-center dark:text-white">No matches found.</h1>
             </div>
         </div>
     </AppLayout>

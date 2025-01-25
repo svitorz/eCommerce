@@ -41,4 +41,10 @@ class Product extends Model
                     ->withPivot('quantity')
                     ->withTimestamps();
     }
+
+    public function favoritedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'favorite_products');
+    }
+
 }
