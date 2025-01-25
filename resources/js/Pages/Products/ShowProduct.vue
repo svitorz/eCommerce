@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps,ref, reactive,watch } from "vue";
+import { defineProps, ref, reactive, watch } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Dropdown from "@/Components/Dropdown.vue";
@@ -11,6 +11,7 @@ import DangerButton from "@/Components/DangerButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import CartButton from "../Cart/Components/CartButton.vue";
 import ToastManager from "@/Components/ToastManager.vue";
+import FavoriteButton from "../Favorites/FavoriteButton.vue";
 
 const props = defineProps({
     product: Array,
@@ -24,7 +25,7 @@ watch(
     (newVal) => {
         Object.assign(localProduct, newVal);
     },
-    { deep: true, immediate: true }
+    { deep: true, immediate: true },
 );
 function updateProductQuantity(quantity) {
     localProduct.quantity = quantity;
@@ -68,98 +69,90 @@ const deleteProduct = (deleteProductId) => {
                     <div
                         class="m-2 rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800"
                     >
-                    <!-- delete and edit dropdown -->
-                    <!-- dropdown to edit and exclude the category buttons-->
-                    <Dropdown align="right" width="48" v-if="isAdmin">
-                        <template #trigger>
-                            <span
-                                class="inline-flex rounded-md float-end"
-                            >
-                                <button
-                                    type="button"
-                                    class="m-5 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-900 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150"
-                                >
-                                    <svg
-                                        class="ms-2 -me-0.5 size-4"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke-width="1.5"
-                                        stroke="currentColor"
+                        <!-- delete and edit dropdown -->
+                        <!-- dropdown to edit and exclude the category buttons-->
+                        <Dropdown align="right" width="48" v-if="isAdmin">
+                            <template #trigger>
+                                <span class="inline-flex rounded-md float-end">
+                                    <button
+                                        type="button"
+                                        class="m-5 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-900 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150"
                                     >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                                        />
-                                    </svg>
-                                </button>
-                            </span>
-                        </template>
+                                        <svg
+                                            class="ms-2 -me-0.5 size-4"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.5"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                                            />
+                                        </svg>
+                                    </button>
+                                </span>
+                            </template>
 
-                        <template #content>
-                            <!-- content -->
-                            <DropdownLink
-                                :href="
-                                    route(
-                                        'products.edit',
-                                        localProduct.id
-                                    )
-                                "
-                            >
-                                Edit Product
-                            </DropdownLink>
-                            <div
-                                class="border-t border-gray-200 dark:border-gray-600"
-                            />
-                            <DropdownLink
-                                as="button"
-                                @click="confirmDelete"
-                            >
-                                Delete Product
-                            </DropdownLink>
-                        </template>
-                    </Dropdown>
-                    <!-- end dropdown -->
-                    <!-- Confirmation Dialog -->
-                    <DialogModal
-                        :show="confirmingDelete"
-                        @close="closeModal"
-                    >
-                        <template #title>
-                            Delete this Product?
-                        </template>
+                            <template #content>
+                                <!-- content -->
+                                <DropdownLink
+                                    :href="
+                                        route('products.edit', localProduct.id)
+                                    "
+                                >
+                                    Edit Product
+                                </DropdownLink>
+                                <div
+                                    class="border-t border-gray-200 dark:border-gray-600"
+                                />
+                                <DropdownLink
+                                    as="button"
+                                    @click="confirmDelete"
+                                >
+                                    Delete Product
+                                </DropdownLink>
+                            </template>
+                        </Dropdown>
+                        <!-- end dropdown -->
+                        <!-- Confirmation Dialog -->
+                        <DialogModal
+                            :show="confirmingDelete"
+                            @close="closeModal"
+                        >
+                            <template #title> Delete this Product? </template>
 
-                        <template #content>
-                            This action is irreversible!
-                        </template>
+                            <template #content>
+                                This action is irreversible!
+                            </template>
 
-                        <template #footer>
-                            <SecondaryButton
-                                :type="button"
-                                @click="closeModal"
-                            >
-                                Cancel
-                            </SecondaryButton>
+                            <template #footer>
+                                <SecondaryButton
+                                    :type="button"
+                                    @click="closeModal"
+                                >
+                                    Cancel
+                                </SecondaryButton>
 
-                            <DangerButton
-                                :type="button"
-                                class="ms-3"
-                                :class="{
-                                    'opacity-25': form.processing,
-                                }"
-                                :disabled="form.processing"
-                                @click="deleteProduct(localProduct.id)"
-                            >
-                                Delete
-                            </DangerButton>
-                        </template>
-                    </DialogModal>
-                    <!--  Confirmation Dialog -->
-                    <section
+                                <DangerButton
+                                    :type="button"
+                                    class="ms-3"
+                                    :class="{
+                                        'opacity-25': form.processing,
+                                    }"
+                                    :disabled="form.processing"
+                                    @click="deleteProduct(localProduct.id)"
+                                >
+                                    Delete
+                                </DangerButton>
+                            </template>
+                        </DialogModal>
+                        <!--  Confirmation Dialog -->
+                        <section
                             class="p-8 bg-white dark:text-white md:py-16 dark:bg-gray-900 antialiased"
                         >
-
                             <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0">
                                 <div
                                     class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16"
@@ -284,14 +277,22 @@ const deleteProduct = (deleteProductId) => {
                                         <div
                                             class="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8"
                                         >
-                                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                {{localProduct.stock}} avaliable.
+                                            <p
+                                                class="text-sm font-medium text-gray-500 dark:text-gray-400"
+                                            >
+                                                {{ localProduct.stock }}
+                                                avaliable.
                                             </p>
                                             <div>
-                                                <InputLabel for="quantity" value="Quantity" />
+                                                <InputLabel
+                                                    for="quantity"
+                                                    value="Quantity"
+                                                />
                                                 <TextInput
                                                     id="quantity"
-                                                    v-model="localProduct.quantity"
+                                                    v-model="
+                                                        localProduct.quantity
+                                                    "
                                                     type="number"
                                                     class="mt-1 w-full h-12"
                                                     :max="localProduct.stock"
@@ -303,32 +304,14 @@ const deleteProduct = (deleteProductId) => {
                                         <div
                                             class="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8"
                                         >
-                                            <a
-                                                href="#"
-                                                title=""
-                                                class="flex items-center justify-center py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                                role="button"
-                                            >
-                                                <svg
-                                                    class="w-5 h-5 -ms-2 me-2"
-                                                    aria-hidden="true"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    width="24"
-                                                    height="24"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path
-                                                        stroke="currentColor"
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"
-                                                    />
-                                                </svg>
-                                                Add to favorites
-                                            </a>
-                                            <CartButton @click="updateProductQuantity" :product="localProduct"/>
+                                            <FavoriteButton
+                                                :product="localProduct"
+                                            />
+
+                                            <CartButton
+                                                @click="updateProductQuantity"
+                                                :product="localProduct"
+                                            />
                                         </div>
 
                                         <hr
@@ -348,6 +331,6 @@ const deleteProduct = (deleteProductId) => {
                 </div>
             </div>
         </div>
-    <ToastManager ref="toastRef" />
+        <ToastManager ref="toastRef" />
     </AppLayout>
 </template>

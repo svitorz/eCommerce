@@ -1,5 +1,6 @@
 <script setup>
 import CartButton from "@/Pages/Cart/Components/CartButton.vue";
+import FavoriteButton from "@/Pages/Favorites/FavoriteButton.vue";
 import { Link } from "@inertiajs/vue3";
 const props = defineProps({
     product: Array,
@@ -65,38 +66,7 @@ const props = defineProps({
                     Quick look
                     <div class="tooltip-arrow"></div>
                 </div>
-
-                <button
-                    type="button"
-                    data-tooltip-target="tooltip-add-to-favorites"
-                    class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                >
-                    <span class="sr-only"> Add to Favorites </span>
-                    <svg
-                        class="h-5 w-5"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            stroke="currentColor"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M12 6C6.5 1 1 8 5.8 13l6.2 7 6.2-7C23 8 17.5 1 12 6Z"
-                        />
-                    </svg>
-                </button>
-                <div
-                    id="tooltip-add-to-favorites"
-                    role="tooltip"
-                    class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700"
-                    data-popper-placement="top"
-                >
-                    Add to favorites
-                    <div class="tooltip-arrow"></div>
-                </div>
+                <FavoriteButton :product="product" />
             </div>
         </div>
 
@@ -178,7 +148,7 @@ const props = defineProps({
         <ul class="mt-2 flex items-center gap-4">
             <li class="flex items-center gap-2">
                 <svg
-                v-if="!product?.category?.name"
+                    v-if="!product?.category?.name"
                     class="h-4 w-4 text-gray-500 dark:text-gray-400"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
@@ -186,7 +156,7 @@ const props = defineProps({
                     viewBox="0 0 24 24"
                 >
                     <path
-                    v-if="!product?.category?.name"
+                        v-if="!product?.category?.name"
                         stroke="currentColor"
                         stroke-linecap="round"
                         stroke-linejoin="round"
@@ -195,7 +165,7 @@ const props = defineProps({
                     />
                 </svg>
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    {{product?.category?.name ?? 'Fast Delivery'}}
+                    {{ product?.category?.name ?? "Fast Delivery" }}
                 </p>
             </li>
 
@@ -227,7 +197,7 @@ const props = defineProps({
                 {{ product.price }}
             </p>
             <!--  -->
-            <CartButton :product="product"/>
+            <CartButton :product="product" />
         </div>
     </div>
 </template>

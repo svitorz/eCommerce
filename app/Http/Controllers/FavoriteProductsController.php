@@ -10,16 +10,21 @@ class FavoriteProductsController extends Controller
 {
     public function store(User $user, Product $product): void
     {
-        $user->favoriteProducts->product($product);
+        if(!$this->isFavorite($user,$product))
+        {
+            $user->favoriteProducts()->attach($product);
+        }
     }
 
     public function destroy(User $user, Product $product): void
     {
-        $user->favoriteProducts()->detach($product);
+        if($this->isFavorite($user,$product)){
+            $user->favoriteProducts()->detach($product);
+        }
     }
 
     public function isFavorite(User $user, Product $product): bool
     {
-        return $user->favoriteProducts()->contains($product);
+        return $user->favoriteProducts->contains($product);
     }
 }

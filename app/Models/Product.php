@@ -18,14 +18,27 @@ class Product extends Model
     ];
 
 
-    protected $appends = ['quantity'];
+    protected $appends = ['quantity','isFavorite'];
+
+    protected function getIsFavoriteAttribute(): bool
+    {
+        return auth()->user()
+            ? $this->favoritedByUsers()->where('user_id', auth()->id())->exists()
+            : false;
+    }
+
+    protected function setIsFavoriteattribute($value)
+    {
+        $this->attributes['isFavorite'] = $value;
+    }
+
 
     protected function getQuantityAttribute(): int
     {
         return $this->attributes['quantity'] ?? 1;
     }
 
-    protected function setQuantityAttribute($value)
+    protected function setquantityattribute($value)
     {
         $this->attributes['quantity'] = $value;
     }
