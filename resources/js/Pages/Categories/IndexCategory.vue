@@ -1,10 +1,12 @@
 <script setup>
-// component imports
 import AppLayout from "@/Layouts/AppLayout.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import CategoryCard from "./Components/CategoryCard.vue";
-// define the variables from api.
-defineProps({ categories: Object, isAdmin: Boolean });
+import Pagination from "@/Components/Pagination.vue";
+import { ref } from "vue";
+const props = defineProps({ categories: Object, isAdmin: Boolean });
+
+const categories = ref([...props.categories.data]);
 </script>
 <template>
     <AppLayout title="Category">
@@ -26,13 +28,17 @@ defineProps({ categories: Object, isAdmin: Boolean });
                 <div
                     class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg"
                 >
-                    <div
-                        class="grid grid-cols-3 m-2"
-                    >
-                    <div v-for="category in categories">
-                        <CategoryCard :category="category" :isAdmin="isAdmin"/>
+                    <div class="grid grid-cols-3 m-2">
+                        <div v-for="category in categories">
+                            <CategoryCard
+                                :category="category"
+                                :isAdmin="isAdmin"
+                            />
+                        </div>
                     </div>
-                    </div>
+                </div>
+                <div class="w-full flex items-center justifiy-center">
+                    <Pagination :links="props.categories.links" />
                 </div>
             </div>
         </div>

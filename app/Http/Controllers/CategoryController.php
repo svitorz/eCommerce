@@ -30,7 +30,7 @@ class CategoryController extends Controller implements HasMiddleware
     public static function middleware():array
     {
         return [
-            new Middleware(isUserAdmin::class, except:['index']) // impede que usuários não-administradores acesses os formulários.
+            new Middleware(isUserAdmin::class, except:['index','getProducts']) // impede que usuários não-administradores acesses os formulários.
         ];
     }
 
@@ -39,7 +39,7 @@ class CategoryController extends Controller implements HasMiddleware
     {
         $products = new Product();
         return Inertia('Products/IndexProducts',[
-            'products' => $products::query()->whereBelongsTo($category)->get(),
+            'products' => $products::query()->whereBelongsTo($category)->paginate(8),
             'isAdmin' => request()->user()->isAdmin(),
         ]);
     }

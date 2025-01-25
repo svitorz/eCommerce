@@ -9,10 +9,12 @@ import { ref } from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { Link } from "@inertiajs/vue3";
 defineProps({
-    category: Object,
+    category: {
+        type: Object,
+        required: true,
+    },
     isAdmin: Boolean,
 });
-// functions
 const form = useForm({
     deleteCategoryId: 0,
 });
@@ -27,7 +29,7 @@ const closeModal = () => {
 };
 
 const deleteCategory = (deleteCategoryId) => {
-    form.delete(route("categories.destroy", deleteCategoryId), {
+    form.delete(route("categories.destroy", { category: deleteCategoryId }), {
         preserveScroll: true,
         onSuccess: () => closeModal(),
     });
@@ -107,14 +109,21 @@ const deleteCategory = (deleteCategoryId) => {
             <h5
                 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
             >
-                {{ category.name }}
+                {{ category?.name }}
             </h5>
 
             <p class="font-normal text-gray-700 dark:text-gray-400 pb-3">
-                {{ category.description }}
+                {{ category?.description }}
             </p>
 
-            <Link :href="route('categories.products',category.id)">
+            <Link
+                v-if="category?.id"
+                :href="
+                    route('categories.products', {
+                        category: category?.id,
+                    })
+                "
+            >
                 <PrimaryButton :type="button">
                     See related Products
                 </PrimaryButton>

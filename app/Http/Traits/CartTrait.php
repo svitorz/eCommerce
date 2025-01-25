@@ -83,25 +83,25 @@ trait CartTrait
     public function getCartItems()
     {
         $cart = session()->get('cart', []);
-        $productIds = collect($cart)->pluck('product_id');
+        $productIds = collect($cart)->pluck('id');
 
         $products = Product::with('category', 'favoritedByUsers')
             ->whereIn('id', $productIds)
             ->get();
 
         return collect($cart)->map(function ($item) use ($products) {
-            $product = $products->firstWhere('id', $item['product_id']);
+            $product = $products->firstWhere('id', $item['id']);
 
             return [
                 'id' => $product->id,
                 'name' => $product->name,
                 'price' => $product->price,
                 'quantity' => $item['quantity'],
-                'total' => $product->price * $item['quantity'],
                 'isFavorite' => $product->isFavorite,
                 'category' => $product->category->name,
+                'category_id' => $product->category_id
             ];
-        });
+        })->toArray();
     }
 
     /**
