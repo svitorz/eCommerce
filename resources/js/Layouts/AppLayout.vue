@@ -22,7 +22,7 @@ const switchToTeam = (team) => {
         },
         {
             preserveState: false,
-        }
+        },
     );
 };
 
@@ -160,7 +160,7 @@ const logout = () => {
                                                     route(
                                                         'teams.show',
                                                         $page.props.auth.user
-                                                            .current_team
+                                                            .current_team,
                                                     )
                                                 "
                                             >
@@ -531,7 +531,7 @@ const logout = () => {
                                     :href="
                                         route(
                                             'teams.show',
-                                            $page.props.auth.user.current_team
+                                            $page.props.auth.user.current_team,
                                         )
                                     "
                                     :active="route().current('teams.show')"
@@ -620,6 +620,25 @@ const logout = () => {
             <main>
                 <slot />
             </main>
+
+            <footer
+                class="small py-5 dark:border-zinc-700 border-t-2 text-center dark:text-white"
+            >
+                Developed by
+                <a
+                    href="github.com/svitorz"
+                    class="text-blue-600 hover:text-blue-900"
+                >
+                    svitorz </a
+                >.
+                <br />
+                <a
+                    href="https://github.com/svitorz/ecommerce"
+                    class="text-green-500 hover:text-green-900"
+                >
+                    Access repository.
+                </a>
+            </footer>
         </div>
     </div>
 </template>

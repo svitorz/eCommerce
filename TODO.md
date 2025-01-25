@@ -11,8 +11,8 @@
 ### Extras
 
 > Paginação.
+> Inserção de itens favoritos(no banco)
 
-- Inserção de itens favoritos(no banco)
 - Inserção de um rating (notas dos usuários ao produto)
 - Comentários ao produto
 - Breadcrumb
