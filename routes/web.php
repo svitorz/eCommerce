@@ -53,4 +53,6 @@ Route::middleware('auth')->group( function () {
 
     Route::post('/favorite/{user}/{product}', [App\Http\Controllers\FavoriteProductsController::class, 'store'])->name('favorite.store');
     Route::delete('/favorite/{user}/{product}', [App\Http\Controllers\FavoriteProductsController::class, 'destroy'])->name('favorite.destroy');
+
+    Route::post('/rating/{user}/{product}', [App\Http\Controllers\ProductRatingController::class, 'store'])->name('rating.store');
 });

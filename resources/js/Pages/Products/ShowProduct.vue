@@ -1,6 +1,6 @@
 <script setup>
 import { defineProps, ref, reactive, watch } from "vue";
-import { useForm } from "@inertiajs/vue3";
+import { router, useForm } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import TextInput from "@/Components/TextInput.vue";
@@ -12,7 +12,10 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import CartButton from "../Cart/Components/CartButton.vue";
 import ToastManager from "@/Components/ToastManager.vue";
 import FavoriteButton from "../Favorites/FavoriteButton.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import { usePage } from "@inertiajs/vue3";
 
+const page = usePage();
 const props = defineProps({
     product: Object,
     isAdmin: Boolean,
@@ -36,7 +39,10 @@ const toastRef = ref(null);
 const form = useForm({
     deleteProductId: 0,
 });
-
+const ratingForm = useForm({
+    rating: 0,
+    feedback: "",
+});
 const confirmingDelete = ref(false);
 const confirmDelete = () => {
     confirmingDelete.value = true;
@@ -52,6 +58,56 @@ const deleteProduct = (deleteProductId) => {
         onSuccess: () => closeModal(),
     });
 };
+
+// Estado para controlar o modal
+const isModalOpen = ref(false);
+
+const openRatingModal = () => {
+    isModalOpen.value = true;
+};
+
+const closeRatingModal = () => {
+    isModalOpen.value = false;
+};
+const iconColor = ref("text-gray-400");
+
+// Função para alterar a cor ao passar o mouse
+const handleMouseEnter = () => {
+    iconColor.value = "text-yellow-400";
+};
+const handleMouseLeave = () => {
+    iconColor.value = "text-gray-400";
+};
+
+// Função chamada ao clicar no botão
+const setRating = (rating) => {
+    ratingForm.rating = rating;
+    console.log(ratingForm.rating);
+};
+
+const submitRating = () => {
+    try {
+        ratingForm.post(
+            route("rating.store", {
+                user: page.props.auth.user.id,
+                product: localProduct.id,
+                data: ratingForm,
+            }),
+            {
+                onSuccess: () => {
+                    toastRef.value.showToast("Feedback sended!", "success");
+                    localProduct.inCart = false;
+                    localProduct.quantity = 1;
+                    closeRatingModal();
+                },
+            },
+        );
+    } catch (error) {
+        toastRef.value.showToast("Unexpected error", "error");
+        console.log(error);
+    }
+};
+console.log(localProduct);
 </script>
 
 <template>
@@ -191,87 +247,142 @@ const deleteProduct = (deleteProductId) => {
                                             <div
                                                 class="flex items-center gap-2 mt-2 sm:mt-0"
                                             >
-                                                <div
-                                                    class="flex items-center gap-1"
+                                                <button
+                                                    class="flex"
+                                                    @click="openRatingModal()"
                                                 >
-                                                    <svg
-                                                        class="w-4 h-4 text-yellow-300"
-                                                        aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width="24"
-                                                        height="24"
-                                                        fill="currentColor"
-                                                        viewBox="0 0 24 24"
+                                                    <div
+                                                        class="flex items-center gap-1"
                                                     >
-                                                        <path
-                                                            d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z"
-                                                        />
-                                                    </svg>
-                                                    <svg
-                                                        class="w-4 h-4 text-yellow-300"
-                                                        aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width="24"
-                                                        height="24"
-                                                        fill="currentColor"
-                                                        viewBox="0 0 24 24"
+                                                        <svg
+                                                            class="w-4 h-4 text-yellow-300"
+                                                            aria-hidden="true"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            width="24"
+                                                            height="24"
+                                                            fill="currentColor"
+                                                            viewBox="0 0 24 24"
+                                                        >
+                                                            <path
+                                                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z"
+                                                            />
+                                                        </svg>
+                                                    </div>
+                                                    <p
+                                                        class="text-sm font-medium leading-none text-gray-500 dark:text-gray-400"
                                                     >
-                                                        <path
-                                                            d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z"
-                                                        />
-                                                    </svg>
-                                                    <svg
-                                                        class="w-4 h-4 text-yellow-300"
-                                                        aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width="24"
-                                                        height="24"
-                                                        fill="currentColor"
-                                                        viewBox="0 0 24 24"
+                                                        <!-- rating -->
+                                                        ({{
+                                                            localProduct.rating_avg ??
+                                                            0
+                                                        }})
+                                                    </p>
+                                                    <a
+                                                        href="#"
+                                                        class="text-sm font-medium leading-none text-gray-900 underline hover:no-underline dark:text-white"
                                                     >
-                                                        <path
-                                                            d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z"
-                                                        />
-                                                    </svg>
-                                                    <svg
-                                                        class="w-4 h-4 text-yellow-300"
-                                                        aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width="24"
-                                                        height="24"
-                                                        fill="currentColor"
-                                                        viewBox="0 0 24 24"
+                                                        {{
+                                                            localProduct.rating_count
+                                                        }}
+                                                        Reviews
+                                                    </a>
+                                                    <DialogModal
+                                                        :show="isModalOpen"
+                                                        @close="
+                                                            closeRatingModal()
+                                                        "
                                                     >
-                                                        <path
-                                                            d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z"
-                                                        />
-                                                    </svg>
-                                                    <svg
-                                                        class="w-4 h-4 text-yellow-300"
-                                                        aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width="24"
-                                                        height="24"
-                                                        fill="currentColor"
-                                                        viewBox="0 0 24 24"
-                                                    >
-                                                        <path
-                                                            d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z"
-                                                        />
-                                                    </svg>
-                                                </div>
-                                                <p
-                                                    class="text-sm font-medium leading-none text-gray-500 dark:text-gray-400"
-                                                >
-                                                    <!-- rating -->
-                                                    (5.0)
-                                                </p>
-                                                <a
-                                                    href="#"
-                                                    class="text-sm font-medium leading-none text-gray-900 underline hover:no-underline dark:text-white"
-                                                >
-                                                    345 Reviews
-                                                </a>
+                                                        <template #title>
+                                                            Review Product
+                                                        </template>
+
+                                                        <template #content>
+                                                            <InputLabel
+                                                                for="feedback"
+                                                                value="Product feedback"
+                                                            />
+                                                            <TextInput
+                                                                v-model="
+                                                                    ratingForm.feedback
+                                                                "
+                                                                id="feedback"
+                                                                type="text"
+                                                                placeholder="Ex: Awesome product."
+                                                                class="mt-1 w-full h-12"
+                                                                required
+                                                                autofocus
+                                                            />
+                                                            <button
+                                                                v-for="star in 5"
+                                                                :key="star"
+                                                                @click="
+                                                                    setRating(
+                                                                        star,
+                                                                    )
+                                                                "
+                                                                :class="{
+                                                                    'text-yellow-400':
+                                                                        star <=
+                                                                        ratingForm.rating,
+                                                                    'text-gray-400':
+                                                                        star >
+                                                                        ratingForm.rating,
+                                                                }"
+                                                                class="text-2xl my-2 focus:outline-none"
+                                                                aria-label="Rate {{ star }}"
+                                                            >
+                                                                <svg
+                                                                    class="w-6 h-6 cursor-pointer transition-transform transform hover:scale-125"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    fill="currentColor"
+                                                                    viewBox="0 0 22 20"
+                                                                    :class="
+                                                                        iconColor
+                                                                    "
+                                                                    @mouseenter="
+                                                                        handleMouseEnter
+                                                                    "
+                                                                    @mouseleave="
+                                                                        handleMouseLeave
+                                                                    "
+                                                                    aria-hidden="true"
+                                                                >
+                                                                    <path
+                                                                        d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                                                                    />
+                                                                </svg>
+                                                            </button>
+                                                        </template>
+
+                                                        <template #footer>
+                                                            <SecondaryButton
+                                                                :type="button"
+                                                                @click="
+                                                                    closeRatingModal
+                                                                "
+                                                            >
+                                                                Cancel
+                                                            </SecondaryButton>
+
+                                                            <PrimaryButton
+                                                                :type="button"
+                                                                @click="
+                                                                    submitRating()
+                                                                "
+                                                                class="ms-3"
+                                                                :class="{
+                                                                    'opacity-25':
+                                                                        form.processing,
+                                                                }"
+                                                                :disabled="
+                                                                    form.processing
+                                                                "
+                                                            >
+                                                                Send
+                                                            </PrimaryButton>
+                                                        </template>
+                                                    </DialogModal>
+                                                </button>
                                             </div>
                                         </div>
                                         <div
