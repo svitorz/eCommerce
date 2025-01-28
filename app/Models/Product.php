@@ -19,27 +19,7 @@ class Product extends Model
     ];
 
 
-    protected $appends = ['quantity','isFavorite', 'rating_avg','rating_count'];
-
-    protected function getRatingCountAttribute(): int
-    {
-        return $this->attributes['rating_count'] ?? 0;
-    }
-
-    protected function setRatingCountAttribute()
-    {
-        $this->attributes['rating_count'] = $this->ratingCount();
-    }
-
-    protected function getRatingAvgAttribute(): int
-    {
-        return $this->attributes['rating_avg'] ?? 0;
-    }
-
-    protected function setRatingAvgAttribute()
-    {
-        $this->attributes['rating_avg'] = $this->averageRating();
-    }
+    protected $appends = ['quantity','isFavorite'];
 
     protected function getIsFavoriteAttribute(): bool
     {
@@ -87,12 +67,4 @@ class Product extends Model
         return $this->hasMany(ProductRating::class);
     }
 
-    public function averageRating()
-    {
-        return $this->ratings()->avg('rating');
-    }
-
-    public function ratingCount(){
-        return $this->ratings()->count();
-    }
 }

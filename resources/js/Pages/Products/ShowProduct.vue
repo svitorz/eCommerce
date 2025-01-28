@@ -1,6 +1,6 @@
 <script setup>
 import { defineProps, ref, reactive, watch } from "vue";
-import { router, useForm } from "@inertiajs/vue3";
+import { useForm } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import TextInput from "@/Components/TextInput.vue";
@@ -14,7 +14,8 @@ import ToastManager from "@/Components/ToastManager.vue";
 import FavoriteButton from "../Favorites/FavoriteButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { usePage } from "@inertiajs/vue3";
-
+import StarRating from "@/Components/StarRating.vue";
+import ProductRatings from "@/Components/ProductRatings.vue";
 const page = usePage();
 const props = defineProps({
     product: Object,
@@ -107,7 +108,24 @@ const submitRating = () => {
         console.log(error);
     }
 };
-console.log(localProduct);
+
+const calculateRating = () => {
+    if (!localProduct.ratings || localProduct.ratings.length === 0) {
+        return 0;
+    }
+
+    const validRatings = localProduct.ratings
+        .map((rating) => Number(rating.rating))
+        .filter((rating) => !isNaN(rating));
+
+    // Se não houver ratings válidos após a filtragem
+    if (validRatings.length === 0) {
+        return 0;
+    }
+
+    const sum = validRatings.reduce((acc, rating) => acc + rating, 0);
+    return Number((sum / validRatings.length).toFixed(1));
+};
 </script>
 
 <template>
@@ -254,26 +272,18 @@ console.log(localProduct);
                                                     <div
                                                         class="flex items-center gap-1"
                                                     >
-                                                        <svg
-                                                            class="w-4 h-4 text-yellow-300"
-                                                            aria-hidden="true"
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            width="24"
-                                                            height="24"
-                                                            fill="currentColor"
-                                                            viewBox="0 0 24 24"
-                                                        >
-                                                            <path
-                                                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z"
-                                                            />
-                                                        </svg>
+                                                        <StarRating
+                                                            :rating="
+                                                                calculateRating()
+                                                            "
+                                                        />
                                                     </div>
                                                     <p
                                                         class="text-sm font-medium leading-none text-gray-500 dark:text-gray-400"
                                                     >
                                                         <!-- rating -->
                                                         ({{
-                                                            localProduct.rating_avg ??
+                                                            calculateRating() ??
                                                             0
                                                         }})
                                                     </p>
@@ -282,9 +292,10 @@ console.log(localProduct);
                                                         class="text-sm font-medium leading-none text-gray-900 underline hover:no-underline dark:text-white"
                                                     >
                                                         {{
-                                                            localProduct.rating_count
+                                                            localProduct.ratings
+                                                                .length
                                                         }}
-                                                        Reviews
+                                                        Review(s)
                                                     </a>
                                                     <DialogModal
                                                         :show="isModalOpen"
@@ -440,6 +451,7 @@ console.log(localProduct);
                         </section>
                     </div>
                 </div>
+                <ProductRatings :ratings="localProduct.ratings" />
             </div>
         </div>
         <ToastManager ref="toastRef" />

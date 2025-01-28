@@ -101,7 +101,7 @@ class ProductController extends Controller implements HasMiddleware
      */
     public function show(Product $product)
     {
-        $product->load('category','ratings')->through(function ($product) {
+        $product->load('category','ratings.user')->through(function ($product) {
             $cartProduct = $this->getCartProduct($product);
                 return [
                     'id' => $product->id,
@@ -111,8 +111,6 @@ class ProductController extends Controller implements HasMiddleware
                     'inCart' => $this->isInCart($product),
                     'quantity' => $cartProduct->quantity ?? 1,
                     'isFavorite' => $product->favoritedByUsers()->where('user_id',auth()->user()->id)->exists(),
-                    'rating_avg', $product->averageRating(),
-                    'rating_count' => $product->ratingCount(),
                 ];
         });
         return Inertia('Products/ShowProduct',
